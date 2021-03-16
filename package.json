@@ -11,6 +11,7 @@
   "author": "mwieth",
   "license": "MIT",
   "devDependencies": {
+    "@armathai/lego-logger": "^3.0.2",
     "autoprefixer": "^8.6.0",
     "awesome-typescript-loader": "^5.2.0",
     "babel-core": "^6.26.3",
@@ -32,6 +33,7 @@
     "webpack-md5-hash": "0.0.6"
   },
   "dependencies": {
+    "@armathai/lego": "^3.0.2",
     "normalize.css": "^8.0.1"
   }
 }

@@ -1,7 +1,17 @@
-import './styles/style.scss';
+import { lego } from "@armathai/lego";
+import { startupCommand } from "./command/startup-command";
+import "./styles/style.scss";
+import { MainView } from "./view/main-view";
 
-console.log('hello, world');
+(function () {
+  if (process.env.NODE_ENV !== "production") {
+    const { legologger } = require("@armathai/lego-logger");
+    // const { legoLoggerConfig } = require("./constants/configs/lego-config");
+    legologger.start(lego, {});
+  }
 
-const testMessage: string = 'TypeScript works';
+  const mainView = new MainView();
+  document.body.appendChild(mainView.view);
 
-console.log(testMessage);
+  lego.command.execute(startupCommand);
+})();
