@@ -1,12 +1,12 @@
-import { CellModel } from "../model/cell-model";
-
 export class CellView {
   private _view: HTMLDivElement;
-  private _cells: CellView[][] = [];
+  private _uuid: string;
 
-  public constructor() {
-    this._view = document.createElement("div");
-    this._view.id = "cell";
+  public constructor(uuid: string) {
+    this._uuid = uuid;
+    this._build();
+
+    // this._addEvent();
     // lego.event.on(BoardModelEvent.cellsUpdate, this._cellModelUpdate, this);
   }
 
@@ -14,17 +14,32 @@ export class CellView {
     return this._view;
   }
 
-  private _cellModelUpdate(cellModel: CellModel): void {
-    // cellModel ? this._buildCells() : this._destroyCells();
-    // console.warn(cellModel);
+  public get uuid(): string {
+    return this._uuid;
   }
 
-  private __buildCells(): void {
-    // this._cells = new GameView();
-    // this._view.appendChild(this._cells.view);
-  }
+  // private _cellModelUpdate(cellModel: CellModel): void {
+  //   // cellModel ? this._buildCells() : this._destroyCells();
+  //   // console.warn(cellModel);
+  // }
 
-  private _destroyCells(): void {
-    // this._view.removeChild(this._cells.view);
+  // private _addEvent(): void {
+  //   this.view.addEventListener("pointerdown", () => {
+  //     lego.event.emit(CellViewEvent.cellClick, this.uuid);
+  //   });
+  // }
+
+  // private __buildCells(): void {
+  //   // this._cells = new GameView();
+  //   // this._view.appendChild(this._cells.view);
+  // }
+
+  // private _destroyCells(): void {
+  //   // this._view.removeChild(this._cells.view);
+  // }
+
+  private _build(): void {
+    this._view = document.createElement("div");
+    this._view.className = "cell";
   }
 }

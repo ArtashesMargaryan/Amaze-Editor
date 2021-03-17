@@ -10,6 +10,10 @@ export class CellModel extends ObservableModel {
     this.makeObservable();
   }
 
+  // public get uuid(): string {
+  //   return this._uuid;
+  // }
+
   // public get board(): BoardModel {
   // return this._board;
   // }

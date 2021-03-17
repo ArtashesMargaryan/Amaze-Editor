@@ -6,16 +6,12 @@ import { UIView } from "./ui-view";
 
 export class MainView {
   private _view: HTMLDivElement;
-  // private _btn: HTMLButtonElement;
-  // private _borderConfig:{}
   private _gameView: GameView;
   private _uiView: UIView;
 
   public constructor() {
-    this._view = document.createElement("div");
-    this._view.id = "main";
-    lego.event.on(StoreEvent.gameUpdate, this._onGameModelUpdate, this);
     this._build();
+    lego.event.on(StoreEvent.gameUpdate, this._onGameModelUpdate, this);
   }
 
   public get view(): HTMLDivElement {
@@ -23,21 +19,27 @@ export class MainView {
   }
 
   private _build() {
+    this._buildView();
     this._buildUIView();
   }
 
   private _onGameModelUpdate(gameModel: GameModel): void {
-    console.warn(gameModel);
     gameModel ? this._buildGameView() : this._destroyGameView();
   }
 
   private _buildGameView(): void {
     this._gameView = new GameView();
     this._view.appendChild(this._gameView.view);
+    console.warn(this._view.clientHeight);
   }
 
   private _destroyGameView(): void {
+    this._gameView.destroy();
     this._view.removeChild(this._gameView.view);
+  }
+
+  private _buildView(): void {
+    this._view = document.createElement("div");
   }
 
   private _buildUIView(): void {

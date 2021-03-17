@@ -8,26 +8,40 @@ export class GameView {
   private _boardView: BoardView;
 
   public constructor() {
-    this._view = document.createElement("div");
-    this._view.id = "game";
+    this._build();
     lego.event.on(GameModelEvent.boardUpdate, this._onboardModelUpdate, this);
+    console.warn(this._view.clientHeight);
   }
 
   public get view(): HTMLDivElement {
     return this._view;
   }
 
-  private _onboardModelUpdate(boardModel: BoardModel): void {
-    console.warn(boardModel);
-    boardModel ? this._buildBoardView() : this._destroyBoardView();
+  public destroy(): void {
+    //
   }
 
-  private _buildBoardView(): void {
+  private _onboardModelUpdate(boardModel: BoardModel): void {
+    boardModel ? this._buildBoardView(boardModel) : this._destroyBoardView();
+  }
+
+  private _buildBoardView(boardModel: BoardModel): void {
     this._boardView = new BoardView();
+
     this._view.appendChild(this._boardView.view);
   }
 
   private _destroyBoardView(): void {
+    this._boardView.destroy();
     this._view.removeChild(this._boardView.view);
+  }
+
+  private _build() {
+    this._buildView();
+  }
+
+  private _buildView(): void {
+    this._view = document.createElement("div");
+    this._view.id = "game";
   }
 }

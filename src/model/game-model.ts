@@ -1,8 +1,8 @@
+import { BoardConfig } from "../type";
 import { BoardModel } from "./board-model";
 import { ObservableModel } from "./observable-model";
 
 export class GameModel extends ObservableModel {
-  private _color: number;
   private _board: BoardModel = null;
 
   public constructor() {
@@ -14,8 +14,8 @@ export class GameModel extends ObservableModel {
     return this._board;
   }
 
-  public initialize(): void {
-    this._board = new BoardModel();
+  public initialize(config: BoardConfig): void {
+    this._board = new BoardModel(config);
     this._board.initialize();
   }
 }

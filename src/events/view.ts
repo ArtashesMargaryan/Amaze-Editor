@@ -4,3 +4,7 @@
 export enum UIViewEvent {
   gameConfigReddy = "UIViewGameConfigReddy",
 }
+
+export enum CellViewEvent {
+  cellClick = "CellViewCellClick",
+}

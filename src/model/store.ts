@@ -1,3 +1,4 @@
+import { BoardConfig } from "../type";
 import { GameModel } from "./game-model";
 import { ObservableModel } from "./observable-model";
 
@@ -13,9 +14,9 @@ class Store extends ObservableModel {
     return this._game;
   }
 
-  public initializeGameModel(): void {
+  public initializeGameModel(config: BoardConfig): void {
     this._game = new GameModel();
-    this._game.initialize();
+    this._game.initialize(config);
   }
 
   public destroyGameModel(): void {
