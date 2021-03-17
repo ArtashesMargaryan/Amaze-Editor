@@ -43,7 +43,7 @@ export class BoardView {
     this._view.style.height = `${width * CELL_HEIGHT}px`;
     this._view.style.gridTemplateColumns = `repeat(${width}, 1fr)`;
     this._view.style.gridTemplateRows = `repeat(${height}, 1fr)`;
-    const canvas = document.getElementById("board");
+    this._view.style.transform = "scale(0.5)";
   }
 
   private _destroyCells(): void {

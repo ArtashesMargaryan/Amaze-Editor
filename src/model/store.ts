@@ -15,6 +15,10 @@ class Store extends ObservableModel {
   }
 
   public initializeGameModel(config: BoardConfig): void {
+    if (this._game) {
+      this._game.destroy();
+      this._game = null;
+    }
     this._game = new GameModel();
     this._game.initialize(config);
   }
