@@ -16,3 +16,27 @@
 //   width: 200px;
 //   background-color: yellow;
 // }
+.inputRow {
+  padding: "12px";
+  width: "80px";
+  margin: "20px,20px";
+  fontsize: "20px";
+}
+
+// private _createStyleBtn(element: HTMLElement): void {
+//   element.style.padding = "12px";
+//   element.style.borderRadius = "30px";
+//   element.style.width = "150px";
+//   element.style.margin = "20px,20px";
+//   element.style.color = "#30bbf0";
+//   element.style.backgroundColor = "#d6de9f";
+//   element.style.outline = "none";
+
+//   // .fontSize= "80px"
+// }
+
+// private _createStyleDiv(element: HTMLElement): void {
+//   element.style.width = "600px";
+//   element.style.position = "relative";
+//   element.style.left = "40%";
+// }
