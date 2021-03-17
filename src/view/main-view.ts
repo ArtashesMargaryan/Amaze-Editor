@@ -10,7 +10,6 @@ export class MainView {
   public constructor() {
     this._view = document.createElement("div");
     this._view.id = "main";
-
     lego.event.on(StoreEvent.gameUpdate, this._onGameModelUpdate, this);
   }
 
@@ -19,8 +18,8 @@ export class MainView {
   }
 
   private _onGameModelUpdate(gameModel: GameModel): void {
-    gameModel ? this._buildGameView() : this._destroyGameView();
     console.warn(gameModel);
+    gameModel ? this._buildGameView() : this._destroyGameView();
   }
 
   private _buildGameView(): void {
