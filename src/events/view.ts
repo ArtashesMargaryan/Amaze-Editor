@@ -1,7 +1,6 @@
 // export enum StoreEvent {
 //   gameUpdate = "StoreGameUpdate",
 // }
- export enum MainViewEvent {
-      gameConfigReddy = "MainViewGameConfigReddy",
-    }
-    
+export enum UIViewEvent {
+  gameConfigReddy = "UIViewGameConfigReddy",
+}
