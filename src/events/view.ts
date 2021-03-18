@@ -2,10 +2,10 @@
 //   gameUpdate = "StoreGameUpdate",
 // }
 export enum UIViewEvent {
-  gameConfigReddy = "UIViewGameConfigReddy",
-  gameBoardReddy = "UIViewGameBoardReddy",
+  gameConfigReady = "UIViewGameConfigReady",
+  gameBoardReady = "UIViewGameBoardReady",
 }
 
 export enum CellViewEvent {
-  cellClick = "CellViewCellClick",
+  cellClick = "CellViewClick",
 }

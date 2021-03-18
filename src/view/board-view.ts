@@ -1,6 +1,6 @@
 import { lego } from "@armathai/lego";
 import { CELL_HEIGHT, CELL_WIDTH } from "../constatnts";
-import { BoardModelEvent } from "../events/model";
+import { BoardModelEvent, CellModelEvent } from "../events/model";
 import { CellModel } from "../model/cell-model";
 import { CellView } from "./cell-view";
 
@@ -12,6 +12,7 @@ export class BoardView {
     this._build();
 
     lego.event.on(BoardModelEvent.cellsUpdate, this._cellModelUpdate, this);
+    lego.event.on(CellModelEvent.statusUpdate, this._selectedCell, this);
   }
 
   public get view(): HTMLDivElement {
@@ -31,14 +32,12 @@ export class BoardView {
       cells[i].map((col, j) => {
         const cellView = new CellView(cells[i][j].uuid);
         this._view.appendChild(cellView.view);
-
         return cellView;
       })
     );
-
+    ///
     const width = cells[0].length;
     const height = cells.length;
-
     this._view.style.width = `${width * CELL_WIDTH}px`;
     this._view.style.height = `${width * CELL_HEIGHT}px`;
     this._view.style.gridTemplateColumns = `repeat(${width}, 1fr)`;
@@ -57,5 +56,21 @@ export class BoardView {
     this._view = document.createElement("div");
     this._view.id = "board";
     this._view.className = "board";
+  }
+
+  private _selectedCell(newStatus: string, oldStatus: string, uuid: string): void {
+    console.warn(uuid);
+    this._cells.forEach((cells) => {
+      cells.forEach((cell) => {
+        if (cell.uuid === uuid) {
+          cell.selected();
+        }
+      });
+    });
+    //
+  }
+
+  private aaa(): void {
+    this._cells[0][0].view;
   }
 }
