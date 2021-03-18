@@ -3,6 +3,7 @@
 // }
 export enum UIViewEvent {
   gameConfigReddy = "UIViewGameConfigReddy",
+  gameBoardReddy = "UIViewGameBoardReddy",
 }
 
 export enum CellViewEvent {

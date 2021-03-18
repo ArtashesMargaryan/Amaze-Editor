@@ -11,6 +11,9 @@ export class MainView {
 
   public constructor() {
     this._build();
+    window.addEventListener("keydown", function (event) {
+      console.warn(event.code);
+    });
     lego.event.on(StoreEvent.gameUpdate, this._onGameModelUpdate, this);
   }
 
