@@ -37,6 +37,22 @@
   outline: none;
 }
 
+#btn_build {
+  padding: 10px;
+  background-color: rgb(45, 59, 48);
+  border-radius: 50px;
+  color: aliceblue;
+  outline: none;
+}
+
+#btn_test {
+  padding: 10px;
+  background-color: rgb(45, 59, 48);
+  border-radius: 50px;
+  color: aliceblue;
+  outline: none;
+}
+
 #game {
   position: absolute;
   top: 60%;
@@ -57,7 +73,7 @@
   height: 100px;
   background-color: #444;
   color: #fff;
-  border-radius: 5px;
+  // border-radius: 5px;
   padding: 20px;
   // font-size: 150%;
 }

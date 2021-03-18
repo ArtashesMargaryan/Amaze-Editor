@@ -5,6 +5,8 @@ import { BoardConfig } from "../type";
 export class UIView {
   private _view: HTMLDivElement;
   private _btn: HTMLButtonElement;
+  private _btnTest: HTMLButtonElement;
+  private _btnBuild: HTMLButtonElement;
   private _rowInput: HTMLInputElement;
   private _colInput: HTMLInputElement;
   private _borderConfig: BoardConfig;
@@ -23,12 +25,18 @@ export class UIView {
 
     setTimeout(() => {
       this._submit();
-    }, 40);
+    }, 50);
   }
 
   private _submit(): void {
     this._btn.addEventListener("pointerdown", () => {
       this._validation();
+      lego.event.emit(UIViewEvent.gameConfigReddy, this._borderConfig);
+    });
+    this._btnTest.addEventListener("pointerdown", () => {
+      lego.event.emit(UIViewEvent.gameBoardReddy);
+    });
+    this._btnBuild.addEventListener("pointerdown", () => {
       lego.event.emit(UIViewEvent.gameConfigReddy, this._borderConfig);
     });
   }
@@ -37,6 +45,8 @@ export class UIView {
     this._buildRowInput();
     this._buildColInput();
     this._buildBtn();
+    this._buildTestBtn();
+    this._buildBuildBtn();
   }
 
   private _buildRowInput(): void {
@@ -58,6 +68,20 @@ export class UIView {
     this._btn.textContent = "Click";
     this._btn.id = "btn";
     this.view.appendChild(this._btn);
+  }
+
+  private _buildTestBtn(): void {
+    this._btnTest = document.createElement("button");
+    this._btnTest.textContent = "test level";
+    this._btnTest.id = "btn_test";
+    this.view.appendChild(this._btnTest);
+  }
+
+  private _buildBuildBtn(): void {
+    this._btnBuild = document.createElement("button");
+    this._btnBuild.textContent = "build level";
+    this._btnBuild.id = "btn_build";
+    this.view.appendChild(this._btnBuild);
   }
 
   private _validation(): void {

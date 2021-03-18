@@ -1,3 +1,5 @@
+import { lego } from "@armathai/lego";
+import { CellViewEvent } from "../events/view";
 import { BoardConfig } from "../type";
 import { CellModel } from "./cell-model";
 import { ObservableModel } from "./observable-model";
@@ -7,7 +9,9 @@ export class BoardModel extends ObservableModel {
 
   public constructor(private _config: BoardConfig) {
     super("BoardModel");
-    console.warn(this._config);
+    // console.warn(this._config);
+    lego.event.on(CellViewEvent.cellClick, this._updateCellStatus.bind(this));
+
     this.makeObservable();
   }
 
@@ -17,6 +21,16 @@ export class BoardModel extends ObservableModel {
 
   public initialize(): void {
     this._buildCells();
+  }
+
+  public _updateCellStatus(uuid: string, newStatus: string): void {
+    this._cells.forEach((cells) => {
+      cells.forEach((cell) => {
+        if (cell.uuid === uuid) {
+          cell.setStatus(newStatus);
+        }
+      });
+    });
   }
 
   private _buildCells(): void {

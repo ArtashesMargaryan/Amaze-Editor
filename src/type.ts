@@ -4,3 +4,8 @@ export type BoardConfig = {
     y: number;
   };
 };
+// export type CeLLStatus = {
+//   way: "way";
+//   actor: "actor";
+//   unknow: "unknow";
+// };
