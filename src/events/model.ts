@@ -9,3 +9,7 @@ export enum GameModelEvent {
 export enum BoardModelEvent {
   cellsUpdate = "BoardModelCellsUpdate",
 }
+
+export enum CellModelEvent {
+  statusUpdate = "CellModelStatusUpdate",
+}

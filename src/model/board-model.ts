@@ -1,5 +1,3 @@
-import { lego } from "@armathai/lego";
-import { CellViewEvent } from "../events/view";
 import { BoardConfig } from "../type";
 import { CellModel } from "./cell-model";
 import { ObservableModel } from "./observable-model";
@@ -10,7 +8,7 @@ export class BoardModel extends ObservableModel {
   public constructor(private _config: BoardConfig) {
     super("BoardModel");
     // console.warn(this._config);
-    lego.event.on(CellViewEvent.cellClick, this._updateCellStatus.bind(this));
+    // lego.event.on(BoardCellViewEvent.cellClick, this._updateCellStatus.bind(this));
 
     this.makeObservable();
   }
@@ -23,11 +21,38 @@ export class BoardModel extends ObservableModel {
     this._buildCells();
   }
 
-  public _updateCellStatus(uuid: string, newStatus: string): void {
+  // public checkBoard() {
+  //   let actor = false;
+  //   let way = false;
+  //   const matrix = [];
+  //   this._cells.forEach((cells, index) => {
+  //     matrix[index] = [];
+  //     cells.forEach((cell) => {
+  //       switch (cell.status) {
+  //         case CELL_STATUS.actor:
+  //           break;
+  //       }
+  //       console.warn(cell.status);
+  //     });
+  //   });
+  // }
+
+  /**
+   * removeEventCells
+   */
+  public removeEventCells() {
+    this._cells.forEach((cells) => {
+      cells.forEach((cell) => {
+        cell.changSelected();
+      });
+    });
+  }
+
+  public updateCellStatus(uuid: string): void {
     this._cells.forEach((cells) => {
       cells.forEach((cell) => {
         if (cell.uuid === uuid) {
-          cell.setStatus(newStatus);
+          cell.selected();
         }
       });
     });

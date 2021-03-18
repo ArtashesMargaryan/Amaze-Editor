@@ -4,5 +4,5 @@ export const CELL_STATUS = {
   way: "way",
   actor: "actor",
   gone: "gone",
-  unknow: "unknow",
+  unknown: "unknown",
 };

@@ -31,13 +31,13 @@ export class UIView {
   private _submit(): void {
     this._btn.addEventListener("pointerdown", () => {
       this._validation();
-      lego.event.emit(UIViewEvent.gameConfigReddy, this._borderConfig);
+      lego.event.emit(UIViewEvent.gameConfigReady, this._borderConfig);
     });
     this._btnTest.addEventListener("pointerdown", () => {
-      lego.event.emit(UIViewEvent.gameBoardReddy);
+      lego.event.emit(UIViewEvent.gameBoardReady);
     });
     this._btnBuild.addEventListener("pointerdown", () => {
-      lego.event.emit(UIViewEvent.gameConfigReddy, this._borderConfig);
+      lego.event.emit(UIViewEvent.gameConfigReady, this._borderConfig);
     });
   }
 
