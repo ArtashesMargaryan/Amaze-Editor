@@ -25,8 +25,20 @@ export class CellView {
     return this._status;
   }
 
+  public set status(status: string) {
+    this._status = status;
+  }
+
   public get uuid(): string {
     return this._uuid;
+  }
+
+  public removeEvent(): void {
+    this.view.removeEventListener("pointerdown", this._select);
+  }
+
+  public addEvent(): void {
+    this._view.addEventListener("pointerdown", this._select);
   }
 
   // private _cellModelUpdate(cellModel: CellModel): void {
@@ -41,10 +53,6 @@ export class CellView {
   //   this.view.addEventListener("pointerdown", this._selected);
   // }
 
-  // protected _removeEvent(): void {
-  //   this.view.removeEventListener("pointerdown", this._selected);
-  // }
-
   // private __buildCells(): void {
   //   // this._cells = new GameView();
   //   // this._view.appendChild(this._cells.view);
@@ -57,19 +65,16 @@ export class CellView {
   public selected = (): void => {
     switch (this._status) {
       case CELL_STATUS.way:
-        this._status = CELL_STATUS.actor;
-        this._view.style.backgroundColor = "red";
+        this._view.style.backgroundColor = "#30BBF0";
         this._view.style.borderRadius = "10px";
 
         break;
-      case CELL_STATUS.actor:
-        this._status = CELL_STATUS.unknown;
-        this._view.style.backgroundColor = "#BBADA0";
+      case CELL_STATUS.entryPosition:
+        this._view.style.backgroundColor = "red";
         this._view.style.borderRadius = "10px";
         break;
       case CELL_STATUS.unknown:
-        this._status = CELL_STATUS.way;
-        this._view.style.backgroundColor = "#30BBF0";
+        this._view.style.backgroundColor = "#BBADA0";
         this._view.style.borderRadius = "10px";
         break;
     }
@@ -82,9 +87,10 @@ export class CellView {
   private _build(): void {
     this._view = document.createElement("div");
     this._view.className = "cell";
-    // this._view.crea = "cell";
-    this._view.addEventListener("pointerdown", this._select);
+    this._view.style.borderRadius = "10px";
 
+    // this._view.crea = "cell";
+    this.addEvent();
     this._view.style.backgroundColor = "#BBADA0";
   }
 }

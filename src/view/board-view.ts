@@ -12,6 +12,7 @@ export class BoardView {
     this._build();
 
     lego.event.on(BoardModelEvent.cellsUpdate, this._cellModelUpdate, this);
+    lego.event.on(BoardModelEvent.cellsEventSwitch, this._cellsEventSwitch, this);
     lego.event.on(CellModelEvent.statusUpdate, this._selectedCell, this);
   }
 
@@ -59,10 +60,11 @@ export class BoardView {
   }
 
   private _selectedCell(newStatus: string, oldStatus: string, uuid: string): void {
-    console.warn(uuid);
+    // console.warn(uuid);
     this._cells.forEach((cells) => {
       cells.forEach((cell) => {
         if (cell.uuid === uuid) {
+          cell.status = newStatus;
           cell.selected();
         }
       });
@@ -70,7 +72,13 @@ export class BoardView {
     //
   }
 
-  private aaa(): void {
-    this._cells[0][0].view;
+  private _cellsEventSwitch(switchOff: boolean): void {
+    // console.warn(switchOff);
+
+    this._cells.forEach((cells) => {
+      cells.forEach((cell) => {
+        switchOff ? cell.removeEvent() : cell.addEvent();
+      });
+    });
   }
 }

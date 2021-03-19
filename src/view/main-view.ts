@@ -12,9 +12,10 @@ export class MainView {
   public constructor() {
     this._build();
     window.addEventListener("keydown", function (event) {
-      console.warn(event.code);
+      // console.warn(event.code);
     });
     lego.event.on(StoreEvent.gameUpdate, this._onGameModelUpdate, this);
+    lego.event.on(StoreEvent.uiUpdate, this._onUIModelUpdate);
   }
 
   public get view(): HTMLDivElement {
@@ -30,10 +31,18 @@ export class MainView {
     gameModel ? this._buildGameView() : this._destroyGameView();
   }
 
+  private _onUIModelUpdate = (newValue: string) => {
+    console.warn(newValue);
+
+    // store.ui.status = UI_STATUS.start;
+    // this._uiView.
+    // uiModel ? this._buildGameView() : this._destroyGameView();
+  };
+
   private _buildGameView(): void {
     this._gameView = new GameView();
     this._view.appendChild(this._gameView.view);
-    console.warn(this._view.clientHeight);
+    // console.warn(this._view.clientHeight);
   }
 
   private _destroyGameView(): void {

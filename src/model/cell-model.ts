@@ -5,16 +5,15 @@ export class CellModel extends ObservableModel {
   private _row: number;
   private _col: number;
   private _status: string;
-  private _selected: boolean;
   public constructor(row: number, col: number) {
     super("CellModel");
     this._row = row;
     this._col = col;
     this._status = CELL_STATUS.unknown;
-    this._selected = true;
     this.makeObservable();
   }
 
+  private _selected: boolean;
   public setStatus(newStatus: string) {
     this._status = newStatus;
   }
@@ -38,6 +37,8 @@ export class CellModel extends ObservableModel {
   // }
 
   public initialize(): void {
+    this._selected = true;
+
     //
   }
 
@@ -49,9 +50,9 @@ export class CellModel extends ObservableModel {
   public selected() {
     switch (this._status) {
       case CELL_STATUS.way:
-        this._status = CELL_STATUS.actor;
+        this._status = CELL_STATUS.entryPosition;
         break;
-      case CELL_STATUS.actor:
+      case CELL_STATUS.entryPosition:
         this._status = CELL_STATUS.unknown;
         break;
       case CELL_STATUS.unknown:

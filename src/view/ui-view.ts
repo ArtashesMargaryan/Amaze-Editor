@@ -1,14 +1,17 @@
 import { lego } from "@armathai/lego";
+import { BOARD_STATUS } from "../constatnts";
+import { StoreEvent } from "../events/model";
 import { UIViewEvent } from "../events/view";
 import { BoardConfig } from "../type";
 
 export class UIView {
   private _view: HTMLDivElement;
-  private _btn: HTMLButtonElement;
+  private _buildCreatBoardBtn: HTMLButtonElement;
   private _btnTest: HTMLButtonElement;
   private _btnBuild: HTMLButtonElement;
   private _rowInput: HTMLInputElement;
   private _colInput: HTMLInputElement;
+  private _btnTestSwitch: string;
   private _borderConfig: BoardConfig;
   public constructor() {
     this._build();
@@ -21,7 +24,9 @@ export class UIView {
   private _build() {
     this._view = document.createElement("div");
     this._view.className = "ui-div";
+    this._btnTestSwitch = BOARD_STATUS.change;
     this._buildInputs();
+    lego.event.on(StoreEvent.uiUpdate, this.testingBtnClick);
 
     setTimeout(() => {
       this._submit();
@@ -29,7 +34,7 @@ export class UIView {
   }
 
   private _submit(): void {
-    this._btn.addEventListener("pointerdown", () => {
+    this._buildCreatBoardBtn.addEventListener("pointerdown", () => {
       this._validation();
       lego.event.emit(UIViewEvent.gameConfigReady, this._borderConfig);
     });
@@ -37,14 +42,25 @@ export class UIView {
       lego.event.emit(UIViewEvent.gameBoardReady);
     });
     this._btnBuild.addEventListener("pointerdown", () => {
-      lego.event.emit(UIViewEvent.gameConfigReady, this._borderConfig);
+      // lego.event.emit(UIViewEvent.gameConfigReady, this._borderConfig);
     });
   }
+
+  private testingBtnClick = (newValue: string) => {
+    console.warn("stex", newValue);
+
+    this._btnTestSwitch = `${newValue}`;
+    if (this._btnTestSwitch == BOARD_STATUS.review) {
+      this._btnTest.style.backgroundColor = "#00C000";
+    } else {
+      this._btnTest.style.backgroundColor = "#2d3b30";
+    }
+  };
 
   private _buildInputs(): void {
     this._buildRowInput();
     this._buildColInput();
-    this._buildBtn();
+    this._buildBoardCreatBtn();
     this._buildTestBtn();
     this._buildBuildBtn();
   }
@@ -63,17 +79,18 @@ export class UIView {
     this.view.appendChild(this._colInput);
   }
 
-  private _buildBtn(): void {
-    this._btn = document.createElement("button");
-    this._btn.textContent = "Click";
-    this._btn.id = "btn";
-    this.view.appendChild(this._btn);
+  private _buildBoardCreatBtn(): void {
+    this._buildCreatBoardBtn = document.createElement("button");
+    this._buildCreatBoardBtn.textContent = "creat board";
+    this._buildCreatBoardBtn.id = "btn";
+    this.view.appendChild(this._buildCreatBoardBtn);
   }
 
   private _buildTestBtn(): void {
     this._btnTest = document.createElement("button");
     this._btnTest.textContent = "test level";
     this._btnTest.id = "btn_test";
+    this._btnTest.style.backgroundColor = "#2d3b30";
     this.view.appendChild(this._btnTest);
   }
 
