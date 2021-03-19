@@ -8,8 +8,11 @@ export enum GameModelEvent {
 
 export enum BoardModelEvent {
   cellsUpdate = "BoardModelCellsUpdate",
+  matrixUpdate = "BoardModelMatrixUpdate",
+  cellsEventSwitch = "BoardModelCellsEventSwitch",
 }
 
 export enum CellModelEvent {
   statusUpdate = "CellModelStatusUpdate",
+  actorUpdate = "CellModelActorUpdate",
 }

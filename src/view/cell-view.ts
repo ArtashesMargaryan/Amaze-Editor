@@ -1,20 +1,23 @@
 import { lego } from "@armathai/lego";
 import { CELL_STATUS } from "../constatnts";
 import { CellViewEvent } from "../events/view";
+import { ActorView } from "./actor-view";
 
 export class CellView {
   private _view: HTMLDivElement;
   private _uuid: string;
   private _status: string;
+  private _row: number;
+  private _col: number;
+  private _actor: ActorView;
 
-  public constructor(uuid: string) {
+  public constructor(row: number, col: number, uuid: string) {
     this._uuid = uuid;
+    this._row = row;
+    this._col = col;
     this._status = CELL_STATUS.unknown;
 
     this._build();
-    // lego.event.on(UIViewEvent.gameBoardReddy, this._removeEvent, this);
-
-    // lego.event.on(BoardModelEvent.cellsUpdate, this._cellModelUpdate, this);
   }
 
   public get view(): HTMLDivElement {
@@ -29,47 +32,43 @@ export class CellView {
     return this._uuid;
   }
 
-  // private _cellModelUpdate(cellModel: CellModel): void {
-  //   // cellModel ? this._buildCells() : this._destroyCells();
-  //   // console.warn(cellModel);
-  // }
+  public addActor(): void {
+    this._actor = new ActorView(this._row, this._col);
+    this.view.appendChild(this._actor.view);
+  }
+
+  public removeActor(): void {
+    this._actor = null;
+    while (this._view.firstChild) {
+      this._view.removeChild(this._view.lastChild);
+    }
+  }
+
   private _kayPlay(): void {
     //
   }
+  public removeEvent(): void {
+    this._view.removeEventListener("pointerdown", this._select);
+  }
 
-  // protected _addEvent(): void {
-  //   this.view.addEventListener("pointerdown", this._selected);
-  // }
+  public addEvent(): void {
+    this.removeEvent();
+    this._view.addEventListener("pointerdown", this._select);
+  }
 
-  // protected _removeEvent(): void {
-  //   this.view.removeEventListener("pointerdown", this._selected);
-  // }
-
-  // private __buildCells(): void {
-  //   // this._cells = new GameView();
-  //   // this._view.appendChild(this._cells.view);
-  // }
-
-  // private _destroyCells(): void {
-  //   // this._view.removeChild(this._cells.view);
-  // }
-
-  public selected = (): void => {
-    switch (this._status) {
+  public selected = (status: string): void => {
+    switch (status) {
       case CELL_STATUS.way:
-        this._status = CELL_STATUS.actor;
-        this._view.style.backgroundColor = "red";
+        this._view.style.backgroundColor = "#30BBF0";
         this._view.style.borderRadius = "10px";
 
         break;
-      case CELL_STATUS.actor:
-        this._status = CELL_STATUS.unknown;
-        this._view.style.backgroundColor = "#BBADA0";
+      case CELL_STATUS.entryPosition:
+        this._view.style.backgroundColor = "red";
         this._view.style.borderRadius = "10px";
         break;
       case CELL_STATUS.unknown:
-        this._status = CELL_STATUS.way;
-        this._view.style.backgroundColor = "#30BBF0";
+        this._view.style.backgroundColor = "#BBADA0";
         this._view.style.borderRadius = "10px";
         break;
     }
@@ -82,9 +81,9 @@ export class CellView {
   private _build(): void {
     this._view = document.createElement("div");
     this._view.className = "cell";
+    this._view.style.borderRadius = "10px";
     // this._view.crea = "cell";
-    this._view.addEventListener("pointerdown", this._select);
-
+    this.addEvent();
     this._view.style.backgroundColor = "#BBADA0";
   }
 }

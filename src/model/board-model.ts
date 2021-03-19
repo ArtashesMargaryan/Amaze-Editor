@@ -1,9 +1,13 @@
+import { lego } from "@armathai/lego";
+import { CELL_STATUS } from "../constatnts";
+import { BoardModelEvent } from "../events/model";
 import { BoardConfig } from "../type";
 import { CellModel } from "./cell-model";
 import { ObservableModel } from "./observable-model";
 
 export class BoardModel extends ObservableModel {
   private _cells: CellModel[][] = [];
+  private _matrix: number[][] = [];
 
   public constructor(private _config: BoardConfig) {
     super("BoardModel");
@@ -21,31 +25,51 @@ export class BoardModel extends ObservableModel {
     this._buildCells();
   }
 
-  // public checkBoard() {
-  //   let actor = false;
-  //   let way = false;
-  //   const matrix = [];
-  //   this._cells.forEach((cells, index) => {
-  //     matrix[index] = [];
-  //     cells.forEach((cell) => {
-  //       switch (cell.status) {
-  //         case CELL_STATUS.actor:
-  //           break;
-  //       }
-  //       console.warn(cell.status);
-  //     });
-  //   });
-  // }
+  public moveActor(event: string): void {
+    console.warn(event);
+  }
 
-  /**
-   * removeEventCells
-   */
+  public createMatrix(): void {
+    const matrix: number[][] = [];
+    this._cells.forEach((cells, index) => {
+      matrix[index] = [];
+      cells.forEach((cell) => {
+        switch (cell.status) {
+          case CELL_STATUS.entryPosition:
+            matrix[index].push(2);
+            break;
+        }
+        switch (cell.status) {
+          case CELL_STATUS.way:
+            matrix[index].push(1);
+            break;
+        }
+        switch (cell.status) {
+          case CELL_STATUS.unknown:
+            matrix[index].push(0);
+            break;
+        }
+      });
+    });
+    console.warn(matrix);
+    this._matrix = matrix;
+  }
+
   public removeEventCells() {
     this._cells.forEach((cells) => {
       cells.forEach((cell) => {
         cell.changSelected();
       });
     });
+  }
+
+  public changSelected() {
+    this._cells.forEach((cells) => {
+      cells.forEach((cell) => {
+        cell.changSelected();
+      });
+    });
+    lego.event.emit(BoardModelEvent.cellsEventSwitch, this._cells[0][0].selectedCell);
   }
 
   public updateCellStatus(uuid: string): void {

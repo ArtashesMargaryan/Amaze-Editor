@@ -9,6 +9,7 @@ export class UIView {
   private _btnBuild: HTMLButtonElement;
   private _rowInput: HTMLInputElement;
   private _colInput: HTMLInputElement;
+  private _btnTestSwitch: boolean;
   private _borderConfig: BoardConfig;
   public constructor() {
     this._build();
@@ -21,6 +22,7 @@ export class UIView {
   private _build() {
     this._view = document.createElement("div");
     this._view.className = "ui-div";
+    this._btnTestSwitch = false;
     this._buildInputs();
 
     setTimeout(() => {
@@ -33,11 +35,18 @@ export class UIView {
       this._validation();
       lego.event.emit(UIViewEvent.gameConfigReady, this._borderConfig);
     });
+
     this._btnTest.addEventListener("pointerdown", () => {
+      this._btnTestSwitch = !this._btnTestSwitch;
+
+      this._btnTestSwitch
+        ? (this._btnTest.style.backgroundColor = "#00C000")
+        : (this._btnTest.style.backgroundColor = "#2d3b30");
+
       lego.event.emit(UIViewEvent.gameBoardReady);
     });
     this._btnBuild.addEventListener("pointerdown", () => {
-      lego.event.emit(UIViewEvent.gameConfigReady, this._borderConfig);
+      // lego.event.emit(UIViewEvent.gameConfigReady, this._borderConfig);
     });
   }
 
@@ -74,6 +83,7 @@ export class UIView {
     this._btnTest = document.createElement("button");
     this._btnTest.textContent = "test level";
     this._btnTest.id = "btn_test";
+    // this._btnTest.style.backgroundColor = "#00C000";
     this.view.appendChild(this._btnTest);
   }
 

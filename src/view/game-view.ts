@@ -1,5 +1,6 @@
 import { lego } from "@armathai/lego";
 import { GameModelEvent } from "../events/model";
+import { GameViewEvent } from "../events/view";
 import { BoardModel } from "../model/board-model";
 import { BoardView } from "./board-view";
 
@@ -9,6 +10,7 @@ export class GameView {
 
   public constructor() {
     this._build();
+    this._addKeyDownEvent();
     lego.event.on(GameModelEvent.boardUpdate, this._onboardModelUpdate, this);
     console.warn(this._view.clientHeight);
   }
@@ -36,8 +38,14 @@ export class GameView {
     this._view.removeChild(this._boardView.view);
   }
 
-  private _build() {
+  private _build(): void {
     this._buildView();
+  }
+
+  private _addKeyDownEvent(): void {
+    window.addEventListener("keydown", function (event) {
+      lego.event.emit(GameViewEvent.keydown, event.code);
+    });
   }
 
   private _buildView(): void {
@@ -45,3 +53,7 @@ export class GameView {
     this._view.id = "game";
   }
 }
+// window.addEventListener("keydown", function (event) {
+//   console.warn(event.code);
+// });
+// lego.event.on(StoreEvent.gameUpdate, this._onGameModelUpdate, this);
