@@ -15,7 +15,11 @@ export class BoardModel extends ObservableModel {
     this._boardReadyIn = BOARD_STATUS.change;
 
     this.makeObservable();
+
   }
+  // private _matrix: number[][] = [];
+
+  private _entryPointer:boolean=false
 
   public get cells(): CellModel[][] {
     return this._cells;
@@ -29,7 +33,16 @@ export class BoardModel extends ObservableModel {
     this._buildCells();
   }
 
-  public createMatrix(): void {
+  // public checkMatrix():void{
+  //   //
+  //   const matrix=this.createMatrix()
+  //   const entryPointer={
+  //     x:Number,
+  //     y:Number
+  //   }
+  // }
+
+  public createMatrix():void {
     const matrix: number[][] = [];
     this._cells.forEach((cells, index) => {
       matrix[index] = [];
@@ -51,8 +64,9 @@ export class BoardModel extends ObservableModel {
         }
       });
     });
-    // console.warn(matrix);
-    this._matrix = matrix;
+    console.warn(matrix);
+this._matrix = matrix
+checkMatrixA(this._matrix)
   }
 
   /**
@@ -74,15 +88,44 @@ export class BoardModel extends ObservableModel {
     // lego.event.emit(BoardModelEvent.cellsEventSwitch, this._cells[0][0].selectedCell);
   }
 
+
   public updateCellStatus(uuid: string): void {
     this._cells.forEach((cells) => {
       cells.forEach((cell) => {
         if (cell.uuid === uuid) {
-          cell.selected();
+          // cell.selected();
+          this._checkCellStatus(cell)
         }
       });
     });
   }
+
+
+  private _checkCellStatus(cell:CellModel){
+    
+    switch(cell.status){
+
+      case CELL_STATUS.entryPosition:
+        this._entryPointer=false
+        cell.selected()
+        break;
+
+        case CELL_STATUS.way:
+          if(this._entryPointer){
+            cell.status=CELL_STATUS.unknown
+          }else{
+            cell.selected()
+        this._entryPointer=true
+          }
+          break;
+
+          case CELL_STATUS.unknown:
+            cell.selected()
+    }
+  }
+
+
+  
 
   private _buildCells(): void {
     const { x, y } = this._config.size;
@@ -98,4 +141,68 @@ export class BoardModel extends ObservableModel {
 
     this._cells = cells;
   }
+}
+
+export function checkMatrixA(matrix:number[][]):void{
+// console.warn(matrix);
+const ways:{i:number,j:number}[][]=[]
+
+
+
+
+for (let i = 0; i < matrix.length; i++) {
+  const arr=[]
+  for (let j = 0; j < matrix[i].length; j++) {
+      if(matrix[i][j]===1||matrix[i][j]===2){
+         arr.push({
+           i:i,j:j
+         })
+        //  return point
+        }else{
+          if(arr.length>0){
+               ways.push([...arr])
+               console.warn(ways);
+               arr.length=0
+
+              }  
+            }
+          }
+          // arr.splice(0,arr.length)
+
+   }
+   
+   for (let i = 0; i < matrix.length; i++) {
+     const arr=[]
+     for (let j = 0; j < matrix[i].length; j++) {
+       if(matrix[j][i]===1||matrix[j][i]===2){
+         arr.push({
+           i:i,j:j
+          })
+        }else{
+          if(arr.length>0){
+            ways.push([...arr])
+            console.warn(ways);
+            arr.length=0
+          }
+        }
+      }
+    }
+    console.warn(ways);
+
+// console.warn(ways);
+
+
+
+
+
+
+
+
+
+
+
+// return point
+}
+export function checkMatrixB(matrix:number[][],x:number,y:number){
+
 }

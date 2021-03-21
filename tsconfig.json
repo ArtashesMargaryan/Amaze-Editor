@@ -1,10 +1,71 @@
 {
-  "compilerOptions": {
-    "outDir": "./dist/",
-    "sourceMap": true,
-    "noImplicitAny": true,
-    "module": "commonjs",
-    "target": "es5",
-    "allowJs": true
+  "cSpell.userWords": [
+    "CREATIONAL",
+    "Easings",
+    "FIZZICS",
+    "Fira",
+    "Jsones",
+    "Monokai",
+    "PIXI",
+    "Robotlegs",
+    "Verlet",
+    "collisionstart",
+    "esnext",
+    "flingable",
+    "injectable",
+    "koreez",
+    "minimap",
+    "mobx",
+    "mvcx",
+    "robotlegsjs",
+    "seti",
+    "signalcommandmap",
+    "toolset",
+    "tweens",
+    "uniqueid"
+  ],
+  "editor.fontFamily": "Fira Code",
+  "editor.fontLigatures": true,
+  "editor.fontSize": 14,
+  "editor.tabSize": 2,
+  "editor.formatOnSave": true,
+  "editor.minimap.enabled": true,
+  "editor.snippetSuggestions": "top",
+  "editor.rulers": [120],
+  "workbench.iconTheme": "vs-seti",
+  "workbench.colorTheme": "Monokai",
+  "sync.gist": "c54227a565aa11f58c343bc5b7654573",
+  "sync.autoDownload": false,
+  "sync.autoUpload": false,
+  "sync.forceDownload": false,
+  "sync.quietSync": false,
+  "sync.askGistName": false,
+  "sync.removeExtensions": true,
+  "sync.syncExtensions": true,
+  "prettier.printWidth": 120,
+  "workbench.sideBar.location": "right",
+  "window.zoomLevel": 0,
+  "javascript.updateImportsOnFileMove.enabled": "always",
+  "typescript.updateImportsOnFileMove.enabled": "always",
+  "editor.suggestSelection": "first",
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": true
+  },
+  "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
+  "workbench.activityBar.visible": true,
+  "explorer.confirmDelete": false,
+  "editor.wordWrap": "off",
+  "editor.tabCompletion": "on",
+  "[html]": {
+    "editor.defaultFormatter": "vscode.html-language-features"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
   }
 }

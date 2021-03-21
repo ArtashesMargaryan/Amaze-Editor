@@ -5,19 +5,19 @@ import { UIModel } from "./ui-model";
 
 class Store extends ObservableModel {
   private _game: GameModel = null;
-  private _ui: UIModel = null;
-
+  
   public constructor() {
     super("Store");
     this.makeObservable();
   }
+  private _ui: UIModel = null;
 
   public get game(): GameModel {
     return this._game;
   }
 
   public get ui(): UIModel {
-    return this.ui;
+    return this._ui;
   }
 
   public initializeGameModel(config: BoardConfig): void {

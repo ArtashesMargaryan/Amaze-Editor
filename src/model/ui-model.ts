@@ -37,7 +37,7 @@ newValue:string   */
     // console.warn(this._config);
     console.warn("kk");
 
-    return;
+    
     if (this.status === UI_STATUS.start) {
       this.status = UI_STATUS.test;
     } else if (this.status === UI_STATUS.test) {

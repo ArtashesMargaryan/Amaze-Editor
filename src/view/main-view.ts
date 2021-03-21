@@ -32,7 +32,7 @@ export class MainView {
   }
 
   private _onUIModelUpdate = (newValue: string) => {
-    console.warn(newValue);
+    // console.warn(newValue);
 
     // store.ui.status = UI_STATUS.start;
     // this._uiView.

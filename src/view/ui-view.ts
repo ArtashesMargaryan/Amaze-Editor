@@ -1,6 +1,6 @@
 import { lego } from "@armathai/lego";
 import { BOARD_STATUS } from "../constatnts";
-import { StoreEvent } from "../events/model";
+import { BoardModelEvent, StoreEvent } from "../events/model";
 import { UIViewEvent } from "../events/view";
 import { BoardConfig } from "../type";
 
@@ -27,7 +27,7 @@ export class UIView {
     this._btnTestSwitch = BOARD_STATUS.change;
     this._buildInputs();
     lego.event.on(StoreEvent.uiUpdate, this.testingBtnClick);
-
+// lego.event.on(BoardModelEvent.boardReadyIn,)
     setTimeout(() => {
       this._submit();
     }, 50);
@@ -42,11 +42,13 @@ export class UIView {
       lego.event.emit(UIViewEvent.gameBoardReady);
     });
     this._btnBuild.addEventListener("pointerdown", () => {
-      // lego.event.emit(UIViewEvent.gameConfigReady, this._borderConfig);
+      // lego.event.emit(UIViewsEvent.gameConfigReady, this._borderConfig);
     });
   }
 
   private testingBtnClick = (newValue: string) => {
+    // console.warn("hasa");
+    // return
     console.warn("stex", newValue);
 
     this._btnTestSwitch = `${newValue}`;
