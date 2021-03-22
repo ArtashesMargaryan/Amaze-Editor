@@ -1,6 +1,6 @@
 import { lego } from "@armathai/lego";
 import { BOARD_STATUS } from "../constatnts";
-import { BoardModelEvent, StoreEvent } from "../events/model";
+import { StoreEvent } from "../events/model";
 import { UIViewEvent } from "../events/view";
 import { BoardConfig } from "../type";
 
@@ -12,6 +12,7 @@ export class UIView {
   private _rowInput: HTMLInputElement;
   private _colInput: HTMLInputElement;
   private _btnTestSwitch: string;
+  private _dataInput: HTMLInputElement;
   private _borderConfig: BoardConfig;
   public constructor() {
     this._build();
@@ -26,8 +27,9 @@ export class UIView {
     this._view.className = "ui-div";
     this._btnTestSwitch = BOARD_STATUS.change;
     this._buildInputs();
+    this._buildDataInput();
     lego.event.on(StoreEvent.uiUpdate, this.testingBtnClick);
-// lego.event.on(BoardModelEvent.boardReadyIn,)
+    // lego.event.on(BoardModelEvent.boardReadyIn,)
     setTimeout(() => {
       this._submit();
     }, 50);
@@ -42,15 +44,11 @@ export class UIView {
       lego.event.emit(UIViewEvent.gameBoardReady);
     });
     this._btnBuild.addEventListener("pointerdown", () => {
-      // lego.event.emit(UIViewsEvent.gameConfigReady, this._borderConfig);
+      lego.event.emit(UIViewEvent.onBuildLevelClick, this._dataInput);
     });
   }
 
   private testingBtnClick = (newValue: string) => {
-    // console.warn("hasa");
-    // return
-    console.warn("stex", newValue);
-
     this._btnTestSwitch = `${newValue}`;
     if (this._btnTestSwitch == BOARD_STATUS.review) {
       this._btnTest.style.backgroundColor = "#00C000";
@@ -65,6 +63,13 @@ export class UIView {
     this._buildBoardCreatBtn();
     this._buildTestBtn();
     this._buildBuildBtn();
+  }
+
+  private _buildDataInput(): void {
+    this._dataInput = document.createElement("input");
+    this._dataInput.type = "text";
+    this._dataInput.hidden = true;
+    document.body.append(this._dataInput);
   }
 
   private _buildRowInput(): void {

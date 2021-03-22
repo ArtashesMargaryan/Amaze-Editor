@@ -10,7 +10,6 @@ export class GameView {
   public constructor() {
     this._build();
     lego.event.on(GameModelEvent.boardUpdate, this._onboardModelUpdate, this);
-    console.warn(this._view.clientHeight);
   }
 
   public get view(): HTMLDivElement {

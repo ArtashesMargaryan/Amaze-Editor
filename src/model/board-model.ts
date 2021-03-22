@@ -7,19 +7,19 @@ export class BoardModel extends ObservableModel {
   private _cells: CellModel[][] = [];
   private _matrix: number[][] = [];
   private _boardReadyIn: string;
+  private _status: string;
 
   public constructor(private _config: BoardConfig) {
     super("BoardModel");
     // console.warn(this._config);
     // lego.event.on(BoardCellViewEvent.cellClick, this._updateCellStatus.bind(this));
     this._boardReadyIn = BOARD_STATUS.change;
-
+    this._status = BOARD_STATUS.ready;
     this.makeObservable();
-
   }
   // private _matrix: number[][] = [];
 
-  private _entryPointer:boolean=false
+  private _entryPointer: boolean = false;
 
   public get cells(): CellModel[][] {
     return this._cells;
@@ -27,6 +27,14 @@ export class BoardModel extends ObservableModel {
 
   public get boardReadyIn(): string {
     return this._boardReadyIn;
+  }
+
+  public get status(): string {
+    return this._status;
+  }
+
+  public get matirx(): number[][] {
+    return this._matrix;
   }
 
   public initialize(): void {
@@ -42,7 +50,7 @@ export class BoardModel extends ObservableModel {
   //   }
   // }
 
-  public createMatrix():void {
+  public createMatrix(): void {
     const matrix: number[][] = [];
     this._cells.forEach((cells, index) => {
       matrix[index] = [];
@@ -64,9 +72,8 @@ export class BoardModel extends ObservableModel {
         }
       });
     });
-    console.warn(matrix);
-this._matrix = matrix
-checkMatrixA(this._matrix)
+    this._matrix = matrix;
+    checkMatrixA(this._matrix);
   }
 
   /**
@@ -88,44 +95,37 @@ checkMatrixA(this._matrix)
     // lego.event.emit(BoardModelEvent.cellsEventSwitch, this._cells[0][0].selectedCell);
   }
 
-
   public updateCellStatus(uuid: string): void {
     this._cells.forEach((cells) => {
       cells.forEach((cell) => {
         if (cell.uuid === uuid) {
           // cell.selected();
-          this._checkCellStatus(cell)
+          this._checkCellStatus(cell);
         }
       });
     });
   }
 
-
-  private _checkCellStatus(cell:CellModel){
-    
-    switch(cell.status){
-
+  private _checkCellStatus(cell: CellModel) {
+    switch (cell.status) {
       case CELL_STATUS.entryPosition:
-        this._entryPointer=false
-        cell.selected()
+        this._entryPointer = false;
+        cell.selected();
         break;
 
-        case CELL_STATUS.way:
-          if(this._entryPointer){
-            cell.status=CELL_STATUS.unknown
-          }else{
-            cell.selected()
-        this._entryPointer=true
-          }
-          break;
+      case CELL_STATUS.way:
+        if (this._entryPointer) {
+          cell.status = CELL_STATUS.unknown;
+        } else {
+          cell.selected();
+          this._entryPointer = true;
+        }
+        break;
 
-          case CELL_STATUS.unknown:
-            cell.selected()
+      case CELL_STATUS.unknown:
+        cell.selected();
     }
   }
-
-
-  
 
   private _buildCells(): void {
     const { x, y } = this._config.size;
@@ -143,66 +143,47 @@ checkMatrixA(this._matrix)
   }
 }
 
-export function checkMatrixA(matrix:number[][]):void{
-// console.warn(matrix);
-const ways:{i:number,j:number}[][]=[]
+export function checkMatrixA(matrix: number[][]): void {
+  // console.warn(matrix);
+  return;
+  const ways: { i: number; j: number }[][] = [];
 
-
-
-
-for (let i = 0; i < matrix.length; i++) {
-  const arr=[]
-  for (let j = 0; j < matrix[i].length; j++) {
-      if(matrix[i][j]===1||matrix[i][j]===2){
-         arr.push({
-           i:i,j:j
-         })
+  for (let i = 0; i < matrix.length; i++) {
+    const arr = [];
+    for (let j = 0; j < matrix[i].length; j++) {
+      if (matrix[i][j] === 1 || matrix[i][j] === 2) {
+        arr.push({
+          i: i,
+          j: j,
+        });
         //  return point
-        }else{
-          if(arr.length>0){
-               ways.push([...arr])
-               console.warn(ways);
-               arr.length=0
-
-              }  
-            }
-          }
-          // arr.splice(0,arr.length)
-
-   }
-   
-   for (let i = 0; i < matrix.length; i++) {
-     const arr=[]
-     for (let j = 0; j < matrix[i].length; j++) {
-       if(matrix[j][i]===1||matrix[j][i]===2){
-         arr.push({
-           i:i,j:j
-          })
-        }else{
-          if(arr.length>0){
-            ways.push([...arr])
-            console.warn(ways);
-            arr.length=0
-          }
+      } else {
+        if (arr.length > 0) {
+          ways.push([...arr]);
+          arr.length = 0;
         }
       }
     }
-    console.warn(ways);
+    // arr.splice(0,arr.length)
+  }
 
-// console.warn(ways);
+  for (let i = 0; i < matrix.length; i++) {
+    const arr = [];
+    for (let j = 0; j < matrix[i].length; j++) {
+      if (matrix[j][i] === 1 || matrix[j][i] === 2) {
+        arr.push({
+          i: i,
+          j: j,
+        });
+      } else {
+        if (arr.length > 0) {
+          ways.push([...arr]);
+          arr.length = 0;
+        }
+      }
+    }
+  }
 
-
-
-
-
-
-
-
-
-
-
-// return point
+  // return point
 }
-export function checkMatrixB(matrix:number[][],x:number,y:number){
-
-}
+export function checkMatrixB(matrix: number[][], x: number, y: number) {}

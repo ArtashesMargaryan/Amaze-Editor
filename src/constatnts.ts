@@ -11,6 +11,7 @@ export const CELL_STATUS = {
 export const BOARD_STATUS = {
   review: "review",
   change: "change",
+  ready: "ready",
 };
 
 export const UI_STATUS = {

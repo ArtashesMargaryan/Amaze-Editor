@@ -1,5 +1,7 @@
-import { store } from "../model/store"
+import { store } from "../model/store";
 
-export const onUIViewReady=():void=>{
-store.ui.selectTestBtn()
-}
+export const onUIViewReady = (): void => {
+  if (store.ui) {
+    store.ui.selectTestBtn();
+  }
+};

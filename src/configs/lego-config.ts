@@ -1,3 +1,4 @@
+import { onBuildLevelClickCommand } from "../command/on-build-level-click-command copy";
 import { onCellClick } from "../command/on-cell-click-command";
 import { onGameBoardReady } from "../command/on-game-board-ready-commands";
 import { onUIViewReady } from "../command/on-ui-ready-commands";
@@ -17,6 +18,10 @@ export const gameCommands = Object.freeze([
   {
     event: CellViewEvent.cellClick,
     command: onCellClick,
+  },
+  {
+    event: UIViewEvent.onBuildLevelClick,
+    command: onBuildLevelClickCommand,
   },
   // {
   //     event: ActorsetViewEvent.actionsComplete,

@@ -35,16 +35,12 @@ newValue:string   */
 
   public selectTestBtn(): void {
     // console.warn(this._config);
-    console.warn("kk");
 
-    
     if (this.status === UI_STATUS.start) {
       this.status = UI_STATUS.test;
     } else if (this.status === UI_STATUS.test) {
       this.status = UI_STATUS.start;
     }
-
-    //
   }
 
   //UI_STATUS
