@@ -33,7 +33,6 @@ export class MainView {
 
   private _onUIModelUpdate = (newValue: string) => {
     // console.warn(newValue);
-
     // store.ui.status = UI_STATUS.start;
     // this._uiView.
     // uiModel ? this._buildGameView() : this._destroyGameView();
@@ -62,4 +61,43 @@ export class MainView {
   private _destroyUIView(): void {
     this._view.removeChild(this._uiView.view);
   }
+
+  // private _getMatrix(): string[][] {
+  //   for (let i = 0; i < this._cells.length; i++) {
+  //     this._matrix[i] = [];
+  //     for (let j = 0; j < this._cells[i].length; j++) {
+  //       const cell = this._cells[i][j];
+  //       switch (cell.status) {
+  //         case CELL_STATUS.way:
+  //           this._matrix[i][j] = "1";
+  //           break;
+  //         case CELL_STATUS.unknow:
+  //           this._matrix[i][j] = "0";
+  //           break;
+  //       }
+  //     }
+  //   }
+
+  //   return this._matrix;
+  // }
+
+  // private _onKeyDown = (event: KeyboardEvent): void => {
+  //   switch (event.key) {
+  //     case "ArrowLeft":
+  //       this._direction = Direction.west;
+  //       break;
+  //     case "ArrowRight":
+  //       this._direction = Direction.east;
+  //       break;
+  //     case "ArrowUp":
+  //       this._direction = Direction.north;
+  //       break;
+  //     case "ArrowDown":
+  //       this._direction = Direction.south;
+  //       break;
+  //   }
+  // };
+
+  // private getpath(): {};
+  // }
 }

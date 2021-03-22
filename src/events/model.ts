@@ -16,6 +16,7 @@ export enum BoardModelEvent {
 
 export enum CellModelEvent {
   statusUpdate = "CellModelStatusUpdate",
+  actorUpdate = "CellModelActorUpdate",
 }
 
 export enum UIModelEvent {
