@@ -19,3 +19,10 @@ export const UI_STATUS = {
   test: "test",
   build: "build",
 };
+
+export const THEMES = {
+  spring: "Spring",
+  summer: "Summer",
+  autumn: "Autumn",
+  winter: "Winter",
+};

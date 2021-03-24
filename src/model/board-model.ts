@@ -8,16 +8,16 @@ export class BoardModel extends ObservableModel {
   private _matrix: number[][] = [];
   private _boardReadyIn: string;
   private _status: string;
+  private _actor: boolean;
+  private _actorPos: { x: number; y: number };
 
   public constructor(private _config: BoardConfig) {
     super("BoardModel");
-    // console.warn(this._config);
-    // lego.event.on(BoardCellViewEvent.cellClick, this._updateCellStatus.bind(this));
+    this._actor = false;
     this._boardReadyIn = BOARD_STATUS.change;
     this._status = BOARD_STATUS.ready;
     this.makeObservable();
   }
-  // private _matrix: number[][] = [];
 
   private _entryPointer: boolean = false;
 
@@ -37,27 +37,29 @@ export class BoardModel extends ObservableModel {
     return this._matrix;
   }
 
+  public get actor(): boolean {
+    return this._actor;
+  }
+
+  public get actorPos(): { x: number; y: number } {
+    return this._actorPos;
+  }
+
   public initialize(): void {
     this._buildCells();
   }
-
-  // public checkMatrix():void{
-  //   //
-  //   const matrix=this.createMatrix()
-  //   const entryPointer={
-  //     x:Number,
-  //     y:Number
-  //   }
-  // }
 
   public createMatrix(): void {
     const matrix: number[][] = [];
     this._cells.forEach((cells, index) => {
       matrix[index] = [];
-      cells.forEach((cell) => {
+      cells.forEach((cell, i) => {
         switch (cell.status) {
           case CELL_STATUS.entryPosition:
-            matrix[index].push(2);
+            this._actor = true;
+            matrix[index].push(1);
+            // matrix[index].push(2);Artashi hamar
+            this._actorPos = { x: index, y: i };
             break;
         }
         switch (cell.status) {
@@ -73,6 +75,7 @@ export class BoardModel extends ObservableModel {
       });
     });
     this._matrix = matrix;
+
     checkMatrixA(this._matrix);
   }
 
@@ -80,6 +83,8 @@ export class BoardModel extends ObservableModel {
    * removeEventCells
    */
   public changSelected() {
+    console.warn("hasa");
+    
     this._cells.forEach((cells) => {
       cells.forEach((cell) => {
         cell.changSelected();
@@ -90,16 +95,12 @@ export class BoardModel extends ObservableModel {
     } else {
       this._boardReadyIn = BOARD_STATUS.review;
     }
-    // console.warn(this._boardReadyIn);
-
-    // lego.event.emit(BoardModelEvent.cellsEventSwitch, this._cells[0][0].selectedCell);
   }
 
   public updateCellStatus(uuid: string): void {
     this._cells.forEach((cells) => {
       cells.forEach((cell) => {
         if (cell.uuid === uuid) {
-          // cell.selected();
           this._checkCellStatus(cell);
         }
       });
@@ -144,7 +145,6 @@ export class BoardModel extends ObservableModel {
 }
 
 export function checkMatrixA(matrix: number[][]): void {
-  // console.warn(matrix);
   return;
   const ways: { i: number; j: number }[][] = [];
 
@@ -164,7 +164,6 @@ export function checkMatrixA(matrix: number[][]): void {
         }
       }
     }
-    // arr.splice(0,arr.length)
   }
 
   for (let i = 0; i < matrix.length; i++) {
@@ -183,7 +182,5 @@ export function checkMatrixA(matrix: number[][]): void {
       }
     }
   }
-
-  // return point
 }
 export function checkMatrixB(matrix: number[][], x: number, y: number) {}

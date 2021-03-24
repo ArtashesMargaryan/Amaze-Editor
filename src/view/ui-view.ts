@@ -8,11 +8,13 @@ export class UIView {
   private _view: HTMLDivElement;
   private _buildCreatBoardBtn: HTMLButtonElement;
   private _btnTest: HTMLButtonElement;
+  private _choiceInput: HTMLSelectElement;
   private _btnBuild: HTMLButtonElement;
   private _rowInput: HTMLInputElement;
+  private _levelInput: HTMLInputElement;
   private _colInput: HTMLInputElement;
   private _btnTestSwitch: string;
-  private _dataInput: HTMLInputElement;
+  private _dataInput: HTMLAnchorElement;
   private _borderConfig: BoardConfig;
   public constructor() {
     this._build();
@@ -44,7 +46,10 @@ export class UIView {
       lego.event.emit(UIViewEvent.gameBoardReady);
     });
     this._btnBuild.addEventListener("pointerdown", () => {
-      lego.event.emit(UIViewEvent.onBuildLevelClick, this._dataInput);
+      lego.event.emit(UIViewEvent.onBuildLevelClick, this._dataInput, this._levelInput.value);
+    });
+    this._choiceInput.addEventListener("pointerup", () => {
+      lego.event.emit(UIViewEvent.onChoiceBtnClick, this._choiceInput.value);
     });
   }
 
@@ -62,14 +67,39 @@ export class UIView {
     this._buildColInput();
     this._buildBoardCreatBtn();
     this._buildTestBtn();
+    this._buildLevelBtn();
+    this._buildChoiceBtn();
     this._buildBuildBtn();
   }
 
   private _buildDataInput(): void {
-    this._dataInput = document.createElement("input");
-    this._dataInput.type = "text";
-    this._dataInput.hidden = true;
-    document.body.append(this._dataInput);
+    this._dataInput = document.createElement("a");
+    // this._dataInput = document.createElement("input");
+    // this._dataInput.type = "text";
+    // this._dataInput.hidden = true;
+    // document.body.append(this._dataInput);
+  }
+
+  private _buildChoiceBtn(): void {
+    var input = document.createElement("text");
+    input.id = "text";
+    input.textContent = "Choose theme:";
+    this._choiceInput = document.createElement("select");
+    this._choiceInput.id = "weather";
+    const spring = document.createElement("option");
+    spring.text = "spring";
+    const summer = document.createElement("option");
+    summer.text = "summer";
+    const autumn = document.createElement("option");
+    autumn.text = "autumn";
+    const winter = document.createElement("option");
+    winter.text = "winter";
+    this._choiceInput.add(spring);
+    this._choiceInput.add(summer);
+    this._choiceInput.add(autumn);
+    this._choiceInput.add(winter);
+    this.view.appendChild(input);
+    this.view.appendChild(this._choiceInput);
   }
 
   private _buildRowInput(): void {
@@ -77,6 +107,16 @@ export class UIView {
     this._rowInput.placeholder = "5";
     this._rowInput.id = "row";
     this.view.appendChild(this._rowInput);
+  }
+
+  private _buildLevelBtn(): void {
+    var text = document.createElement("text");
+    text.id = "text";
+    text.textContent = "Level";
+    this._levelInput = document.createElement("input");
+    this._levelInput.id = "levelinp";
+    this.view.appendChild(text);
+    this.view.appendChild(this._levelInput);
   }
 
   private _buildColInput(): void {

@@ -26,7 +26,8 @@ export class GameView {
 
   private _buildBoardView(boardModel: BoardModel): void {
     this._boardView = new BoardView();
-
+    // const br = HTMLBRElement;
+    // this._view.appendChild(br);
     this._view.appendChild(this._boardView.view);
   }
 

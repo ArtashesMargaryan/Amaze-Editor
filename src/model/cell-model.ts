@@ -48,11 +48,10 @@ export class CellModel extends ObservableModel {
     //
   }
 
-
   public selected() {
     switch (this._status) {
       case CELL_STATUS.way:
-          this._status = CELL_STATUS.entryPosition;
+        this._status = CELL_STATUS.entryPosition;
         break;
       case CELL_STATUS.entryPosition:
         this._status = CELL_STATUS.unknown;
