@@ -1,4 +1,6 @@
+import { onBuildLevelClickCommand } from "../command/on-build-level-click-command";
 import { onCellClick } from "../command/on-cell-click-command";
+import { onChoiceBtnClickCommand } from "../command/on-choice-btn-click-command";
 import { onGameBoardReady } from "../command/on-game-board-ready-commands";
 import { onKeyDownCommand } from "../command/on-key-down-command";
 import { onUIViewReady } from "../command/on-ui-ready-commands";
@@ -22,6 +24,14 @@ export const gameCommands = Object.freeze([
   {
     event: GameViewEvent.keydown,
     command: onKeyDownCommand,
+  },
+  {
+    event: UIViewEvent.onBuildLevelClick,
+    command: onBuildLevelClickCommand,
+  },
+  {
+    event: UIViewEvent.onChoiceBtnClick,
+    command: onChoiceBtnClickCommand,
   },
   // {
   //     event: ActorsetViewEvent.actionsComplete,

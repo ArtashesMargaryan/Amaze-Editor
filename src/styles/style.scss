@@ -9,9 +9,18 @@
   padding: 10px;
   margin-top: 0;
   outline: none;
+  z-index: 1;
 }
 
 #row {
+  background-color: rgb(185, 170, 170);
+  margin: 10px;
+  padding: 10px;
+  border-radius: 30px;
+  margin-top: 20;
+  outline: none;
+}
+#levelinp {
   background-color: rgb(185, 170, 170);
   margin: 10px;
   padding: 10px;
@@ -45,6 +54,23 @@
   outline: none;
 }
 
+#weather {
+  padding: 10px;
+  background-color: rgb(45, 59, 48);
+  border-radius: 50px;
+  color: aliceblue;
+  outline: none;
+}
+
+#text {
+  padding: 10px;
+  // background-color: rgb(45, 59, 48);
+  // border-radius: 50px;
+  color: aliceblue;
+  font-size: 20px;
+  outline: none;
+}
+
 #btn_test {
   padding: 10px;
   // background-color: rgb(45, 59, 48);
@@ -55,6 +81,7 @@
 }
 
 #game {
+  z-index: -1;
   position: absolute;
   top: 60%;
   left: 50%;

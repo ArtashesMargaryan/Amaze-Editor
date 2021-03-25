@@ -70,6 +70,8 @@ export class CellView {
 
         break;
       case CELL_STATUS.entryPosition:
+        console.warn("jhdhjc");
+
         this._view.style.backgroundColor = "red";
         this._view.style.borderRadius = "10px";
         break;

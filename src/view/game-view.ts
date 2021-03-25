@@ -12,7 +12,6 @@ export class GameView {
     this._build();
     this._addKeyDownEvent();
     lego.event.on(GameModelEvent.boardUpdate, this._onboardModelUpdate, this);
-    // console.warn(this._view.clientHeight);
   }
 
   public get view(): HTMLDivElement {
@@ -29,7 +28,8 @@ export class GameView {
 
   private _buildBoardView(boardModel: BoardModel): void {
     this._boardView = new BoardView();
-
+    // const br = HTMLBRElement;
+    // this._view.appendChild(br);
     this._view.appendChild(this._boardView.view);
   }
 
