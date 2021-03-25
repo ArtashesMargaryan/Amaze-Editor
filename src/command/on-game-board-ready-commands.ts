@@ -6,7 +6,7 @@ export const onGameBoardReady = (): void => {
   if (store && store.game && store.game.board) {
     // store.ui.selectTestBtn();
     store.game.board.changSelected();
-    store.game.board.createMatrix();
+    // store.game.board.createMatrix();
     return;
   }
 };

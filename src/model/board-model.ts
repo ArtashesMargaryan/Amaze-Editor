@@ -1,6 +1,6 @@
 import { BOARD_STATUS, CELL_STATUS } from "../constatnts";
 import { BoardConfig } from "../type";
-import { compare } from "../utils";
+import { compare, searchCompare } from "../utils";
 import { CellModel } from "./cell-model";
 import { ObservableModel } from "./observable-model";
 
@@ -11,6 +11,7 @@ export class BoardModel extends ObservableModel {
   private _entryPointer: { i: number; j: number } = { i: -1, j: -1 };
   private _status: string;
   private _actor: boolean;
+  private _hasSolution: boolean;
   private _actorPos: { x: number; y: number };
 
   public constructor(private _config: BoardConfig) {
@@ -79,9 +80,10 @@ export class BoardModel extends ObservableModel {
         }
       });
     });
-    // console.warn(matrix);
+    console.warn(matrix);
     this._matrix = matrix;
-    // this._checkMatrixA(this._matrix);
+    this._hasSolution = true;
+    this._checkMatrixA(this._matrix);
     this._matrix = matrix;
     // this._checkMatrixA(this._matrix);
   }
@@ -89,7 +91,7 @@ export class BoardModel extends ObservableModel {
    * removeEventCells
    */
   public changSelected() {
-    console.warn("hasa");
+    // console.warn("hasa");
 
     this._cells.forEach((cells) => {
       cells.forEach((cell) => {
@@ -134,6 +136,7 @@ export class BoardModel extends ObservableModel {
         cell.selected();
         break;
     }
+    this.createMatrix();
   }
 
   /*
@@ -172,75 +175,27 @@ for (let i = 0; i < matrix.length; i++) {
     this._cells = cells;
   }
 
-  private _checkBoard() {
-    //
-  }
-
-  private _checkMatrixB(ways: { i: number; j: number }[][]) {
-    console.warn(this._entryPointer);
-
-    const startWay = [this._entryPointer];
-    const myWays = [...ways];
-    myWays.splice(0, 1);
-    console.warn(myWays);
-
-    const extremumPoints: { i: number; j: number }[] = [];
-    let finish: { i: number; j: number };
-    extremumPoints.push(startWay[0]);
-    if (startWay.length > 0) {
-      finish = startWay[startWay.length - 1];
-    }
-
-    while (myWays.length > 0) {
-      let too = -1;
-      const len = ways.length;
-      for (let i = 0; i < extremumPoints.length; i++) {
-        for (let j = 0; j < myWays.length; j++) {
-          if (compare(extremumPoints[i], myWays[j])) {
-            too = j;
-
-            if (!compare(myWays[j][0], extremumPoints)) {
-              console.warn(myWays[j][0], extremumPoints);
-              extremumPoints.push(myWays[j][0]);
-            }
-            if (!compare(myWays[j][myWays[j].length - 1], extremumPoints)) {
-              console.warn(myWays[j][myWays[j].length - 1], extremumPoints);
-
-              extremumPoints.push(myWays[j][myWays[j].length - 1]);
-            }
-          }
-        }
-        // export function checkMatrixA(matrix: number[][]): void {
-        //   return;
-        //   const ways: { i: number; j: number }[][] = [];
-
-        //   for (let i = 0; i < matrix.length; i++) {
-        //     const arr = [];
-        //     for (let j = 0; j < matrix[i].length; j++) {
-        //       if (matrix[i][j] === 1 || matrix[i][j] === 2) {
-        //         arr.push({
-        //           i: i,
-        //           j: j,
-        //         });
-        //         //  return point
-        //       } else {
-        //         if (arr.length > 0) {
-        //           ways.push([...arr]);
-        //           arr.length = 0;
-        // >>>>>>> 9696faf33c5f3df7a8ac54869135539f71c5a093
-        //         }
-        //       }
-        //       // console.warn(extremumPoints);
-        //       // console.warn(myWays.length);
-        //       if (too != -1) {
-        //         myWays.splice(too, 1);
-        //       } else {
-        //         myWays.length = 0;
-        //       }
-        //     }
-        //   }
+  private _checkBoard(extremumPoints: { i: number; j: number }[], ways: { i: number; j: number }[][]) {
+    ways.forEach((way) => {
+      const a = searchCompare(way[0], extremumPoints);
+      const b = searchCompare(way[way.length - 1], extremumPoints);
+      if (a != -1) {
+        extremumPoints.splice(a, 1);
       }
+      if (b != -1) {
+        extremumPoints.splice(b, 1);
+      }
+    });
+    if (extremumPoints.length > 0) {
+      console.warn(false);
+
+      this._hasSolution = false;
+    } else {
+      console.warn(true);
+
+      this._hasSolution = true;
     }
+    //
   }
 
   private _checkMatrixA(matrix: number[][]): void {
@@ -250,30 +205,22 @@ for (let i = 0; i < matrix.length; i++) {
       const arr = [];
       for (let j = 0; j < matrix[i].length; j++) {
         if (matrix[i][j] === 1 || matrix[i][j] === 2) {
-          if (matrix[i][j] === 2) {
-            arr.push({
-              i: i,
-              j: j,
-              entryPoint: true,
-            });
-          } else {
-            arr.push({
-              i: i,
-              j: j,
-            });
-          }
+          arr.push({
+            i: i,
+            j: j,
+          });
         } else {
           if (arr.length > 1) {
             ways.push([...arr]);
             arr.length = 0;
+          } else if (arr.length === 1) {
+            this._hasSolution = false;
           }
+
           arr.length = 0;
         }
       }
-      if (arr.length > 1) {
-        ways.push([...arr]);
-        arr.length = 0;
-      }
+
       // arr.splice(0,arr.length)
     }
 
@@ -289,166 +236,63 @@ for (let i = 0; i < matrix.length; i++) {
           if (arr.length > 1) {
             ways.push([...arr]);
             arr.length = 0;
+          } else if (arr.length === 1) {
+            this._hasSolution = false;
           }
+
           arr.length = 0;
         }
       }
-      if (arr.length > 1) {
-        ways.push([...arr]);
-        arr.length = 0;
-      }
-      // arr.splice(0,arr.length)
     }
-    console.warn(ways);
+    if (!this._hasSolution) {
+      console.warn(this._hasSolution);
+
+      return;
+    }
+    console.warn(this._hasSolution);
 
     this._checkMatrixB(ways);
   }
+
+  private _checkMatrixB(ways: { i: number; j: number }[][]) {
+    const startWay = [this._entryPointer];
+    const myWays = [...ways];
+    console.warn(ways);
+    console.warn(startWay[0]);
+    const extremumPoints: { i: number; j: number }[] = [];
+    extremumPoints.push(startWay[0]);
+    if (startWay.length > 0) {
+    }
+
+    let too = -1;
+    while (myWays.length > 0) {
+      const len = ways.length;
+      for (let i = 0; i < extremumPoints.length; i++) {
+        for (let j = 0; j < myWays.length; j++) {
+          if (compare(extremumPoints[i], myWays[j])) {
+            too = j;
+
+            if (!compare(myWays[j][0], extremumPoints)) {
+              // console.warn("mtav1");
+              extremumPoints.push(myWays[j][0]);
+            }
+            if (!compare(myWays[j][myWays[j].length - 1], extremumPoints)) {
+              // console.warn("mtav2");
+
+              extremumPoints.push(myWays[j][myWays[j].length - 1]);
+            }
+          }
+        }
+      }
+
+      if (too != -1 || len == 1) {
+        myWays.length = 0;
+      } else {
+        myWays.splice(too, 1);
+      }
+    }
+    console.warn(extremumPoints[0]);
+
+    // this._checkBoard(extremumPoints, ways);
+  }
 }
-
-// export function checkMatrixA(matrix: number[][]): void {
-//   const ways: { i: number; j: number }[][] = [];
-
-//   for (let i = 0; i < matrix.length; i++) {
-//     const arr = [];
-//     for (let j = 0; j < matrix[i].length; j++) {
-//       if (matrix[i][j] === 1 || matrix[i][j] === 2) {
-//         if (matrix[i][j] === 2) {
-//           arr.push({
-//             i: i,
-//             j: j,
-//             entryPoint: true,
-//           });
-//         } else {
-//           arr.push({
-//             i: i,
-//             j: j,
-//           });
-//         }
-//       } else {
-//         if (arr.length > 1) {
-//           ways.push([...arr]);
-//           arr.length = 0;
-//         }
-//         arr.length = 0;
-//       }
-//     }
-//     if (arr.length > 1) {
-//       ways.push([...arr]);
-//       arr.length = 0;
-//     }
-//     // arr.splice(0,arr.length)
-//   }
-
-//   for (let i = 0; i < matrix.length; i++) {
-//     const arr = [];
-//     for (let j = 0; j < matrix[i].length; j++) {
-//       if (matrix[j][i] === 1) {
-//         arr.push({
-//           i: j,
-//           j: i,
-//         });
-//       } else {
-//         if (arr.length > 1) {
-//           ways.push([...arr]);
-//           arr.length = 0;
-//         }
-//         arr.length = 0;
-//       }
-//     }
-//     if (arr.length > 1) {
-//       ways.push([...arr]);
-//       arr.length = 0;
-//     }
-//     // arr.splice(0,arr.length)
-//   }
-//   console.warn(ways);
-
-//   checkMatrixB(ways);
-// }
-
-// export function searchWays(ways: { i: number; j: number }[][]): { i: number; j: number }[] {
-//   let startWay: { i: number; j: number }[] = [];
-//   console.warn(ways);
-//   for (let i = 0; i < ways.length; i++) {
-//     for (let j = 0; j < ways[i].length; j++) {
-//       if (ways[i][j]) {
-//         return ways[i];
-//       }
-//     }
-//   }
-//   return [];
-// }
-
-// // export function se(params:type) {
-
-// // }
-
-// export function checkMatrixB(ways: { i: number; j: number }[][]) {
-//   console.warn(this.entryPointer);
-
-//   const startWay = [this.entryPointer];
-//   const myWays = [...ways];
-//   myWays.splice(0, 1);
-//   console.warn(myWays);
-
-//   const extremumPoints: { i: number; j: number }[] = [];
-//   let finish: { i: number; j: number };
-//   extremumPoints.push(startWay[0]);
-//   if (startWay.length > 0) {
-//     finish = startWay[startWay.length - 1];
-//   }
-
-//   while (myWays.length > 0) {
-//     let too = -1;
-//     const len = ways.length;
-//     for (let i = 0; i < extremumPoints.length; i++) {
-//       for (let j = 0; j < myWays.length; j++) {
-//         if (compare(extremumPoints[i], myWays[j])) {
-//           too = j;
-
-//           if (!compare(myWays[j][0], extremumPoints)) {
-//             console.warn(myWays[j][0], extremumPoints);
-//             extremumPoints.push(myWays[j][0]);
-//           }
-//           if (!compare(myWays[j][myWays[j].length - 1], extremumPoints)) {
-//             console.warn(myWays[j][myWays[j].length - 1], extremumPoints);
-
-//             extremumPoints.push(myWays[j][myWays[j].length - 1]);
-//           }
-//         }
-//       }
-//     }
-//     // console.warn(extremumPoints);
-//     // console.warn(myWays.length);
-//     if (too != -1) {
-//       myWays.splice(too, 1);
-//     } else {
-//       myWays.length = 0;
-//     }
-//   }
-// }
-
-// // export function compareSearch(ways: { i: number; j: number }[][], pointers: { i: number; j: number }[]): number {
-// //   for (let i = 0; i < pointers.length; i++) {
-// //     for (let j = 1; j < ways.length - 1; j++) {
-// //       if (compare(pointers[i], ways[j])) {
-// //         return j;
-// //       }
-// //     }
-// //   }
-// //   return -1;
-// // }
-
-// // export function compare(pointerB: { i: number; j: number }, pointerA: { i: number; j: number }[]): boolean {
-// //   // console.warn(pointerB);
-// //   // console.warn(pointerA);
-
-// //   for (let i = 0; i < pointerA.length; i++) {
-// //     if (pointerB.i === pointerA[i].i && pointerB.j === pointerA[i].j) {
-// //       return true;
-// //     }
-// //   }
-// //   return false;
-// // }
-
-export function checkMatrixB(matrix: number[][], x: number, y: number) {}
