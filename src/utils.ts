@@ -32,3 +32,13 @@ export function compare(pointerB: { i: number; j: number }, pointerA: { i: numbe
   }
   return false;
 }
+export function compareElement(pointerB: { i: number; j: number }, pointerA: { i: number; j: number }): boolean {
+  // console.warn(pointerB);
+  // console.warn(pointerA);
+
+  if (pointerB.i === pointerA.i && pointerB.j === pointerA.j) {
+    return true;
+  }
+
+  return false;
+}
