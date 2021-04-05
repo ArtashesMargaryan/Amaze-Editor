@@ -1,6 +1,6 @@
 import { BOARD_STATUS, CELL_STATUS } from "../constatnts";
 import { BoardConfig } from "../type";
-import { compare, compareTwoWay } from "../utils";
+import { compare, compareA, compareTwoWay } from "../utils";
 import { CellModel } from "./cell-model";
 import { ObservableModel } from "./observable-model";
 
@@ -165,9 +165,9 @@ export class BoardModel extends ObservableModel {
   }
 
   private _checkBoard(extremumPoints: { i: number; j: number }[], ways: { i: number; j: number }[][]) {
-    // console.warn("_checkBoard");
+    console.warn(ways);
     const allPointer: { i: number; j: number }[] = [];
-    const copyWays = [...ways];
+    const island: { i: number; j: number }[][] = [];
     ways.forEach((way) => {
       if (compare(way[0], extremumPoints) && compare(way[way.length - 1], extremumPoints)) {
         way.forEach((cell) => {
@@ -175,13 +175,20 @@ export class BoardModel extends ObservableModel {
             allPointer.push(cell);
           }
         });
+      } else if (!compare(way[0], extremumPoints) && !compare(way[way.length - 1], extremumPoints)) {
+        island.push([...way]);
       }
     });
     if (allPointer.length === this._cellsWays) {
       console.warn("this matrix right");
     } else {
+      console.warn("island1", island);
+      if (island.length > 0) {
+        this._reminder(island);
+      }
       console.warn("this don't matrix right");
     }
+    console.warn("island2", island);
 
     console.warn(allPointer);
   }
@@ -201,6 +208,12 @@ export class BoardModel extends ObservableModel {
   ): { i: number; j: number }[][] {
     const allWays: { i: number; j: number }[][] = waysH.filter((ways) => ways.length > 1);
     allWays.push(...waysV.filter((ways) => ways.length > 1));
+    const allWaysOne: { i: number; j: number }[][] = waysH.filter((ways) => ways.length === 1);
+    allWaysOne.push(
+      ...waysV.filter((ways) => ways.length === 1 && !compareA(ways[0], allWaysOne) && !compareA(ways[0], allWays))
+    );
+    console.warn(allWaysOne);
+
     return allWays;
   }
 
@@ -266,7 +279,7 @@ export class BoardModel extends ObservableModel {
     const myWays = [...ways];
 
     const extremumPoints: { i: number; j: number }[] = [];
-
+    let after = true;
     while (true) {
       const ext = extremumPoints.length;
       for (let i = 0; i < myWays.length; i++) {
@@ -276,7 +289,9 @@ export class BoardModel extends ObservableModel {
           extremumPoints.push(myWays[i][0]);
         } else if (compareTwoWay(myWays[i], extremumPoints)) {
           extremumPoints.push(myWays[i][0], myWays[i][myWays[i].length - 1]);
-        } else if (compare(this._entryPointer, ways[i])) {
+        } else if (compare(this._entryPointer, ways[i]) && after) {
+          extremumPoints.push(myWays[i][0], myWays[i][myWays[i].length - 1]);
+          after = false;
         }
       }
 
@@ -287,6 +302,12 @@ export class BoardModel extends ObservableModel {
     }
     console.warn(extremumPoints);
 
-    // this._checkBoard(extremumPoints, ways);
+    this._checkBoard(extremumPoints, ways);
+  }
+
+  private _reminder(island: { i: number; j: number }[][]): void {
+    island.forEach((element) => {
+      console.warn(element);
+    });
   }
 }
