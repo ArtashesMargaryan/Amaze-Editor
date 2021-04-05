@@ -1,6 +1,6 @@
 import { BOARD_STATUS, CELL_STATUS } from "../constatnts";
 import { BoardConfig } from "../type";
-import { compare, compareElement, searchCompare } from "../utils";
+import { compare, compareTwoWay } from "../utils";
 import { CellModel } from "./cell-model";
 import { ObservableModel } from "./observable-model";
 
@@ -14,7 +14,7 @@ export class BoardModel extends ObservableModel {
   private _hasSolution: boolean;
   private _actorPos: { x: number; y: number };
 
-  private _islands: { i: number; j: number }[] = [];
+  private _cellsWays: number;
   private _ways: { i: number; j: number }[][] = [];
 
   public constructor(private _config: BoardConfig) {
@@ -62,7 +62,7 @@ export class BoardModel extends ObservableModel {
   //   }
   // }
   public updateCellStatus(uuid: string): void {
-    console.warn("updateCellStatus");
+    // console.warn("updateCellStatus");
 
     this._cells.forEach((cells) => {
       cells.forEach((cell) => {
@@ -75,7 +75,7 @@ export class BoardModel extends ObservableModel {
   }
 
   private _checkCellStatus(cell: CellModel) {
-    console.warn("_checkCellStatus");
+    // console.warn("_checkCellStatus");
 
     switch (cell.status) {
       case CELL_STATUS.entryPosition:
@@ -99,9 +99,11 @@ export class BoardModel extends ObservableModel {
     this.createMatrix();
   }
 
-  public createMatrix(): void {
-    console.warn("createMatrix");
+  // bynar matrix convert cell matrix
 
+  public createMatrix(): void {
+    // console.warn("createMatrix");
+    this._cellsWays = 0;
     const matrix: number[][] = [];
     this._cells.forEach((cells, index) => {
       matrix[index] = [];
@@ -110,11 +112,14 @@ export class BoardModel extends ObservableModel {
           case CELL_STATUS.entryPosition:
             this._actor = true;
             matrix[index].push(1);
+            this._cellsWays++;
             this._actorPos = { x: index, y: indexJ };
             this._entryPointer = { i: index, j: indexJ };
             break;
           case CELL_STATUS.way:
             matrix[index].push(1);
+            this._cellsWays++;
+
             break;
           case CELL_STATUS.unknown:
             matrix[index].push(0);
@@ -133,8 +138,6 @@ export class BoardModel extends ObservableModel {
    * removeEventCells
    */
   public changSelected() {
-    console.warn("changSelected");
-
     this._cells.forEach((cells) => {
       cells.forEach((cell) => {
         cell.changSelected();
@@ -149,139 +152,111 @@ export class BoardModel extends ObservableModel {
     }
   }
 
-  /*
-
-
-for (let i = 0; i < matrix.length; i++) {
-  const arr = [];
-  for (let j = 0; j < matrix[i].length; j++) {
-    if (matrix[j][i] === 1 || matrix[j][i] === 2) {
-      arr.push({
-        i: i,
-        j: j,
-      });
-    } else {
-      if (arr.length > 0) {
-        ways.push([...arr]);
-        arr.length = 0;
-      }
-    }
-  }
-}
-  */
-
   private _buildCells(): void {
     const { x, y } = this._config.size;
     const cells = [];
-
     for (let i = 0; i < y; i++) {
       cells[i] = [];
-
       for (let j = 0; j < x; j++) {
         cells[i][j] = new CellModel(i, j);
       }
     }
-
     this._cells = cells;
   }
 
   private _checkBoard(extremumPoints: { i: number; j: number }[], ways: { i: number; j: number }[][]) {
-    console.warn("_checkBoard");
-
+    // console.warn("_checkBoard");
+    const allPointer: { i: number; j: number }[] = [];
+    const copyWays = [...ways];
     ways.forEach((way) => {
-      const a = searchCompare(way[0], extremumPoints);
-      const b = searchCompare(way[way.length - 1], extremumPoints);
-      if (a != -1) {
-        extremumPoints.splice(a, 1);
-      }
-      if (b != -1) {
-        extremumPoints.splice(b, 1);
+      if (compare(way[0], extremumPoints) && compare(way[way.length - 1], extremumPoints)) {
+        way.forEach((cell) => {
+          if (!compare(cell, allPointer)) {
+            allPointer.push(cell);
+          }
+        });
       }
     });
-    if (extremumPoints.length > 0) {
-      // console.warn(false);
-      // this._hasSolution = false;
+    if (allPointer.length === this._cellsWays) {
+      console.warn("this matrix right");
     } else {
-      // console.warn(true);
-      // this._hasSolution = true;
+      console.warn("this don't matrix right");
     }
-    //
+
+    console.warn(allPointer);
   }
+
   ///create island of cells if any
   ///
   private _buildBynarWaysArray(matrix: number[][]): void {
-    const ways: { i: number; j: number }[][] = [];
-    const wayH: { i: number; j: number }[] = [];
+    const waysH: { i: number; j: number }[][] = this._buildBynarWaysH(matrix);
+    const waysV: { i: number; j: number }[][] = this._buildBynarWaysV(matrix);
+    const ways: { i: number; j: number }[][] = this._joinWays(waysH, waysV);
+    this._ways = ways;
+  }
 
-    const islands: { i: number; j: number }[] = [];
-    const wayV: { i: number; j: number }[] = [];
+  private _joinWays(
+    waysH: { i: number; j: number }[][],
+    waysV: { i: number; j: number }[][]
+  ): { i: number; j: number }[][] {
+    const allWays: { i: number; j: number }[][] = waysH.filter((ways) => ways.length > 1);
+    allWays.push(...waysV.filter((ways) => ways.length > 1));
+    return allWays;
+  }
+
+  private _buildBynarWaysH(matrix: number[][]): { i: number; j: number }[][] {
+    const ways: { i: number; j: number }[][] = [];
+    const way: {
+      i: number;
+      j: number;
+    }[] = [];
+
     for (let i = 0; i < matrix.length; i++) {
       for (let j = 0; j < matrix[i].length; j++) {
         if (matrix[i][j] === 1) {
-          wayH.push({ i: i, j: j });
-        } else if (wayH.length > 1) {
-          ways.push([...wayH]);
-          wayH.length = 0;
-        } else {
-          if (wayH.length === 1) {
-            islands.push(...wayH);
-          }
-          wayH.length = 0;
-        }
-        if (matrix[j][i] === 1) {
-          wayV.push({ i: j, j: i });
-        } else if (wayV.length > 1) {
-          ways.push([...wayV]);
-          wayV.length = 0;
-        } else {
-          if (wayV.length === 1) {
-            islands.push(...wayV);
-          }
-          wayV.length = 0;
+          const cell = { i: i, j: j };
+          way.push(cell);
+        } else if (way.length >= 1) {
+          ways.push([...way]);
+          way.length = 0;
         }
       }
-      if (wayH.length > 1) {
-        ways.push([...wayH]);
-        wayH.length = 0;
-      } else {
-        if (wayH.length === 1) {
-          islands.push(...wayH);
-        }
-        wayH.length = 0;
-      }
-      if (wayV.length > 1) {
-        ways.push([...wayV]);
-        wayV.length = 0;
-      } else {
-        if (wayV.length === 1) {
-          islands.push(...wayV);
-        }
-        wayV.length = 0;
+      if (way.length >= 1) {
+        ways.push([...way]);
+        way.length = 0;
       }
     }
-    this._ways = ways;
-    this._islands = this.sincronizatiaIsland(islands);
-    console.warn(this._islands);
-    console.warn(ways);
+
+    return ways;
   }
 
-  private sincronizatiaIsland(islands: { i: number; j: number }[]): { i: number; j: number }[] {
-    const newIslands: { i: number; j: number }[] = [];
-    islands.forEach((island) => {
-      if (!compare(island, newIslands)) {
-        newIslands.push(island);
+  private _buildBynarWaysV(matrix: number[][]): { i: number; j: number }[][] {
+    const ways: { i: number; j: number }[][] = [];
+    const way: {
+      i: number;
+      j: number;
+    }[] = [];
+
+    for (let i = 0; i < matrix.length; i++) {
+      for (let j = 0; j < matrix[i].length; j++) {
+        if (matrix[j][i] === 1) {
+          const cell = { i: j, j: i };
+          way.push(cell);
+        } else if (way.length >= 1) {
+          ways.push([...way]);
+          way.length = 0;
+        }
       }
-    });
-    console.warn("newIsland", newIslands.length);
+      if (way.length >= 1) {
+        ways.push([...way]);
+        way.length = 0;
+      }
+    }
 
-    console.warn("newIsland", newIslands.length);
-
-    return newIslands;
+    return ways;
   }
 
   private _checkWaysConnectivity(ways: { i: number; j: number }[][]) {
-    console.warn("_checkWaysConnectivity");
-    console.warn(this._ways);
     if (this._entryPointer.i === -1 || this._entryPointer.j === -1) {
       console.warn("error has not entryPointer");
       return;
@@ -289,138 +264,29 @@ for (let i = 0; i < matrix.length; i++) {
 
     const startWay = [this._entryPointer];
     const myWays = [...ways];
-    // console.warn(ways);
-    // console.warn(startWay[0]);
+
     const extremumPoints: { i: number; j: number }[] = [];
-    extremumPoints.push(startWay[0]);
 
-    let too = -1;
-    while (myWays.length > 0) {
-      const len = ways.length;
-      for (let i = 0; i < extremumPoints.length; i++) {
-        for (let j = 0; j < myWays.length; j++) {
-          if (compare(extremumPoints[i], myWays[j])) {
-            too = j;
-
-            if (!compare(myWays[j][0], extremumPoints)) {
-              // console.warn("mtav1");
-              extremumPoints.push(myWays[j][0]);
-            }
-            if (!compare(myWays[j][myWays[j].length - 1], extremumPoints)) {
-              // console.warn("mtav2");
-
-              extremumPoints.push(myWays[j][myWays[j].length - 1]);
-            }
-          }
+    while (true) {
+      const ext = extremumPoints.length;
+      for (let i = 0; i < myWays.length; i++) {
+        if (compare(myWays[i][0], extremumPoints) && !compare(myWays[i][myWays[i].length - 1], extremumPoints)) {
+          extremumPoints.push(myWays[i][myWays[i].length - 1]);
+        } else if (!compare(myWays[i][0], extremumPoints) && compare(myWays[i][myWays[i].length - 1], extremumPoints)) {
+          extremumPoints.push(myWays[i][0]);
+        } else if (compareTwoWay(myWays[i], extremumPoints)) {
+          extremumPoints.push(myWays[i][0], myWays[i][myWays[i].length - 1]);
+        } else if (compare(this._entryPointer, ways[i])) {
         }
       }
 
-      if (too != -1) {
-        console.warn("error don't right board");
-
-        myWays.length = 0;
-      } else {
-        myWays.splice(too, 1);
+      if (extremumPoints.length === ext) {
+        break;
       }
+      // console.warn(extremumPoints);
     }
     console.warn(extremumPoints);
 
     // this._checkBoard(extremumPoints, ways);
-  }
-
-  private _checkWaysConnectivityR(ways: { i: number; j: number }[][]) {
-    console.warn("_checkWaysConnectivity");
-    console.warn(this._entryPointer);
-    if (this._entryPointer.i === -1 || this._entryPointer.j === -1) {
-      console.warn("error has not entryPointer");
-      return;
-    }
-
-    const startWay = [this._entryPointer];
-    const myWays = [...ways];
-    // console.warn(ways);
-    // console.warn(startWay[0]);
-    const allPointers: { i: number; j: number }[] = [];
-    const extremumPoints: { i: number; j: number }[] = [];
-    extremumPoints.push(startWay[0]);
-
-    let too = -1;
-    while (myWays.length > 0) {
-      const len = ways.length;
-      for (let i = 0; i < extremumPoints.length; i++) {
-        for (let j = 0; j < myWays.length; j++) {
-          if (
-            compareElement(extremumPoints[i], myWays[j][0]) ||
-            compareElement(extremumPoints[i], myWays[j][myWays[j].length - 1])
-          ) {
-            if (!compare(myWays[j][0], extremumPoints)) {
-              // console.warn("mtav1");
-              extremumPoints.push(myWays[j][0]);
-            }
-            if (!compare(myWays[j][myWays[j].length - 1], extremumPoints)) {
-              // console.warn("mtav2");
-
-              extremumPoints.push(myWays[j][myWays[j].length - 1]);
-            }
-          }
-        }
-      }
-
-      if (too != -1 || len == 1) {
-        myWays.length = 0;
-      } else {
-        myWays.splice(too, 1);
-      }
-    }
-    console.warn(extremumPoints);
-
-    // this._checkBoard(extremumPoints, ways);
-  }
-
-  private _smartPush(
-    mainArr: { i: number; j: number }[][],
-    current: { i: number; j: number }[]
-  ): { i: number; j: number }[][] {
-    // console.warn("mtav");
-
-    if (mainArr.length === 0) {
-      mainArr.push([...current]);
-
-      return mainArr;
-    }
-
-    const len = mainArr.length;
-    for (let i = 0; i < len; i++) {
-      if (compareElement(mainArr[i][0], current[0])) {
-        if (current[1] && mainArr[i][1] && compareElement(current[1], mainArr[i][1])) {
-          return mainArr;
-        } else if (current[1] && mainArr[i][1]) {
-          mainArr.push([...current]);
-          return mainArr;
-        }
-      }
-    }
-    mainArr.push([...current]);
-
-    return mainArr;
-  }
-  private _smartPushCell(
-    cellArray: { i: number; j: number }[],
-    cell: { i: number; j: number }
-  ): { i: number; j: number }[] {
-    // console.warn("mtav");
-
-    if (cellArray.length === 0) {
-      cellArray.push(cell);
-
-      return cellArray;
-    }
-
-    const len = cellArray.length;
-    if (!compare(cell, cellArray)) {
-      cellArray.push(cell);
-    }
-
-    return cellArray;
   }
 }
