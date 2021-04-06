@@ -16,6 +16,7 @@ export class BoardModel extends ObservableModel {
 
   private _cellsWays: number;
   private _ways: { i: number; j: number }[][] = [];
+  private _island: { i: number; j: number }[][] = [];
 
   public constructor(private _config: BoardConfig) {
     super("BoardModel");
@@ -127,12 +128,9 @@ export class BoardModel extends ObservableModel {
         }
       });
     });
-    // console.warn(this._hasSolution);
-    // console.warn(matrix);
+
     this._matrix = matrix;
     this._hasSolution = true;
-    // this._buildBynarWaysArray(this._matrix);
-    // this._checkMatrixA(this._matrix);
   }
   /**
    * removeEventCells
@@ -168,7 +166,7 @@ export class BoardModel extends ObservableModel {
     console.warn(ways);
     const allPointer: { i: number; j: number }[] = [];
     const island: { i: number; j: number }[][] = [];
-    ways.forEach((way) => {
+    ways.forEach((way, index) => {
       if (compare(way[0], extremumPoints) && compare(way[way.length - 1], extremumPoints)) {
         way.forEach((cell) => {
           if (!compare(cell, allPointer)) {
@@ -185,6 +183,7 @@ export class BoardModel extends ObservableModel {
       console.warn("island1", island);
       if (island.length > 0) {
         this._reminder(island);
+        // this._alarm(island);
       }
       console.warn("this don't matrix right");
     }
@@ -202,17 +201,32 @@ export class BoardModel extends ObservableModel {
     this._ways = ways;
   }
 
+  /////********************************** */
+  private _alarm(islands: { i: number; j: number }[][]): void {
+    islands.forEach((island, i) => {
+      island.forEach((cell, j) => {
+        // console.warn("1", this._cells[cell.i][cell.j]);
+        this._cells[cell.i][cell.j].toWarningStatus();
+      });
+    });
+  }
+
   private _joinWays(
     waysH: { i: number; j: number }[][],
     waysV: { i: number; j: number }[][]
   ): { i: number; j: number }[][] {
     const allWays: { i: number; j: number }[][] = waysH.filter((ways) => ways.length > 1);
     allWays.push(...waysV.filter((ways) => ways.length > 1));
-    const allWaysOne: { i: number; j: number }[][] = waysH.filter((ways) => ways.length === 1);
-    allWaysOne.push(
-      ...waysV.filter((ways) => ways.length === 1 && !compareA(ways[0], allWaysOne) && !compareA(ways[0], allWays))
+    const allWaysIsland: { i: number; j: number }[][] = []; // waysH.filter((ways) => ways.length === 1);
+    console.warn(allWays);
+
+    allWaysIsland.push(
+      ...waysV.filter((ways) => ways.length === 1 && !compareA(ways[0], allWaysIsland) && !compareA(ways[0], allWays))
     );
-    console.warn(allWaysOne);
+    if (allWaysIsland.length > 0) {
+      this._island = allWaysIsland;
+      this._alarm(allWaysIsland);
+    }
 
     return allWays;
   }

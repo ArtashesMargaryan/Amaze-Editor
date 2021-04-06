@@ -14,6 +14,7 @@ export class BoardView {
     lego.event.on(BoardModelEvent.cellsUpdate, this._cellModelUpdate, this);
     lego.event.on(BoardModelEvent.cellsEventSwitch, this._cellsEventSwitch, this);
     lego.event.on(CellModelEvent.statusUpdate, this._selectedCell, this);
+    lego.event.on(CellModelEvent.hasWarning, this._oddCell, this);
   }
 
   public get view(): HTMLDivElement {
@@ -78,6 +79,17 @@ export class BoardView {
     this._cells.forEach((cells) => {
       cells.forEach((cell) => {
         switchOff ? cell.removeEvent() : cell.addEvent();
+      });
+    });
+  }
+  private _oddCell(newValue: boolean, oldValue: boolean, uuid: string): void {
+    // console.warn(switchOff);
+    this._cells.forEach((cells) => {
+      cells.forEach((cell) => {
+        if (cell.uuid === uuid) {
+          console.warn(newValue, uuid);
+          cell.signal(newValue);
+        }
       });
     });
   }

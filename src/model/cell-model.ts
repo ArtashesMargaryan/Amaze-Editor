@@ -5,9 +5,11 @@ export class CellModel extends ObservableModel {
   private _row: number;
   private _col: number;
   private _status: string;
+  private _hasWarning: boolean;
   public constructor(row: number, col: number) {
     super("CellModel");
     this._row = row;
+    this._hasWarning = false;
     this._col = col;
     this._status = CELL_STATUS.unknown;
     this.makeObservable();
@@ -45,10 +47,18 @@ export class CellModel extends ObservableModel {
 
   public changSelected(): void {
     this._selected = !this._selected;
+    this._hasWarning = false;
+
+    //
+  }
+  public toWarningStatus(): void {
+    this._hasWarning = !this._hasWarning;
     //
   }
 
   public selected() {
+    this._hasWarning = false;
+
     switch (this._status) {
       case CELL_STATUS.way:
         this._status = CELL_STATUS.entryPosition;
