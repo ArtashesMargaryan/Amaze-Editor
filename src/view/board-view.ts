@@ -87,8 +87,7 @@ export class BoardView {
     this._cells.forEach((cells) => {
       cells.forEach((cell) => {
         if (cell.uuid === uuid) {
-          console.warn(newValue, uuid);
-          cell.signal(newValue);
+          cell.signal(newValue, oldValue);
         }
       });
     });

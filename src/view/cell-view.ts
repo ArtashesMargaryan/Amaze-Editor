@@ -6,7 +6,6 @@ export class CellView {
   private _view: HTMLDivElement;
   private _uuid: string;
   private _status: string;
-  private _warningStatus: boolean = false;
 
   public constructor(uuid: string) {
     this._uuid = uuid;
@@ -40,14 +39,6 @@ export class CellView {
 
   public addEvent(): void {
     this._view.addEventListener("pointerdown", this._select);
-  }
-
-  public signal(hasOn: boolean): void {
-    if (hasOn) {
-      this._view.style.backgroundColor = "#ff0303";
-    } else {
-      this._view.style.backgroundColor = "#30BBF0";
-    }
   }
 
   // private _cellModelUpdate(cellModel: CellModel): void {
@@ -87,10 +78,20 @@ export class CellView {
       case CELL_STATUS.unknown:
         this._view.style.backgroundColor = "#BBADA0";
         this._view.style.borderRadius = "10px";
-        this.signal(false);
         break;
     }
   };
+
+  public signal(newValue: boolean, oldValue: boolean): void {
+    console.warn(newValue);
+    if (newValue && this._status != CELL_STATUS.entryPosition) {
+      this._view.style.backgroundColor = "red";
+    } else if (oldValue && !newValue && this._status != CELL_STATUS.entryPosition) {
+      this._view.style.backgroundColor = "#30BBF0";
+    }
+
+    //
+  }
 
   private _select = (): void => {
     lego.event.emit(CellViewEvent.cellClick, this._uuid);
